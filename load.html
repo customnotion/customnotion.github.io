@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#0E2D42" />
+  <title>Add Memory · The OGs</title>
+  <style>
+    :root {
+      --navy:   #0E2D42;
+      --navy-mid: #163b55;
+      --navy-light: #1f4f72;
+      --orange: #FF5420;
+      --og:     #ff7a55;
+      --bg:     #FEFCFF;
+      --text:   #0E2D42;
+      --muted:  #5a7a90;
+      --border: #d0e4ee;
+      --green:  #22c55e;
+      --r:      14px;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: var(--bg); color: var(--text); min-height: 100dvh; }
+
+    /* NAV */
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      background: var(--navy); border-bottom: 3px solid var(--orange);
+      display: grid; grid-template-columns: 1fr auto 1fr;
+      align-items: center; padding: 0 24px; height: 62px;
+    }
+    .nav-dots { display: flex; gap: 6px; }
+    .nd { width: 9px; height: 9px; border-radius: 50%; background: var(--orange); }
+    .nd:nth-child(2) { opacity:.5; background:#9eb5c5; }
+    .nd:nth-child(3) { opacity:.25; background:#9eb5c5; }
+    .brand { font-size: 1.5rem; font-weight: 900; letter-spacing: .04em; color: #FEFCFF; text-align: center; }
+    .brand span { color: var(--orange); }
+    .nav-right { display: flex; justify-content: flex-end; }
+    .back-link { font-size: .75rem; font-weight: 700; color: rgba(255,255,255,.6); text-decoration: none; letter-spacing: .06em; border: 1px solid rgba(255,255,255,.2); border-radius: 20px; padding: 5px 14px; transition: color .2s, border-color .2s; }
+    .back-link:hover { color: var(--orange); border-color: rgba(255,84,32,.5); }
+
+    /* HERO */
+    .hero { background: var(--navy); text-align: center; padding: 44px 24px 44px; position: relative; overflow: hidden; }
+    .hero::after { content:''; position:absolute; bottom:-1px; left:0; right:0; height:40px; background:var(--bg); clip-path:ellipse(55% 100% at 50% 100%); }
+    .hero-eye { font-size:.72rem; letter-spacing:.22em; text-transform:uppercase; color:var(--orange); font-weight:700; margin-bottom:8px; }
+    .hero h1 { font-size: clamp(1.6rem, 5vw, 2.6rem); font-weight:900; line-height:1.1; color:#FEFCFF; letter-spacing:-.02em; }
+    .hero h1 em { color:var(--orange); font-style:normal; }
+    .hero-sub { color:#9eb5c5; font-size:.9rem; margin-top:10px; }
+
+    /* MAIN LAYOUT */
+    .page { max-width: 900px; margin: 0 auto; padding: 48px 20px 72px; }
+
+    /* STEP LABELS */
+    .step-label {
+      font-size: .7rem; font-weight: 800; letter-spacing: .14em; text-transform: uppercase;
+      color: var(--orange); margin-bottom: 10px; display: flex; align-items: center; gap: 8px;
+    }
+    .step-label::after { content:''; flex:1; height:1px; background:linear-gradient(90deg,rgba(255,84,32,.3),transparent); }
+
+    /* INPUT CARD */
+    .card {
+      background: #fff; border: 1.5px solid var(--border); border-radius: var(--r);
+      padding: 24px; margin-bottom: 24px;
+      box-shadow: 0 2px 12px rgba(14,45,66,.06);
+    }
+
+    /* LINK INPUT */
+    .link-row { display: flex; gap: 10px; align-items: stretch; }
+    .link-input {
+      flex: 1; padding: 12px 16px; border: 1.5px solid var(--border); border-radius: 10px;
+      font-size: .95rem; color: var(--text); background: var(--bg);
+      outline: none; transition: border-color .2s, box-shadow .2s;
+      font-family: inherit;
+    }
+    .link-input:focus { border-color: var(--orange); box-shadow: 0 0 0 3px rgba(255,84,32,.1); }
+    .link-input::placeholder { color: #aac0cc; }
+    .check-btn {
+      padding: 12px 22px; background: var(--orange); color: #fff; border: none;
+      border-radius: 10px; font-size: .88rem; font-weight: 700; cursor: pointer;
+      transition: background .15s, transform .15s; white-space: nowrap;
+    }
+    .check-btn:hover { background: var(--og); transform: translateY(-1px); }
+    .check-btn:active { transform: scale(.97); }
+
+    .link-hint { font-size: .76rem; color: var(--muted); margin-top: 8px; line-height: 1.5; }
+    .link-hint code { background: #eef4f8; color: var(--navy); padding: 1px 5px; border-radius: 4px; font-size: .73rem; }
+
+    /* STATUS */
+    .status { display: none; align-items: center; gap: 8px; margin-top: 12px; font-size: .82rem; font-weight: 600; }
+    .status.show { display: flex; }
+    .status.loading { color: var(--muted); }
+    .status.ok      { color: #16a34a; }
+    .status.err     { color: var(--orange); }
+    .spin { width: 16px; height: 16px; border: 2px solid rgba(90,122,144,.3); border-top-color: var(--muted); border-radius: 50%; animation: spin .7s linear infinite; flex-shrink:0; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* PREVIEW + FORM — side by side on desktop */
+    .preview-form { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 24px; }
+    @media (max-width: 640px) { .preview-form { grid-template-columns: 1fr; } }
+
+    /* PREVIEW CARD */
+    .preview-wrap {
+      border-radius: var(--r); overflow: hidden; aspect-ratio: 4/3;
+      background: linear-gradient(135deg, #ddeaf0, #c5d8e4);
+      position: relative; border: 1.5px solid var(--border);
+    }
+    .preview-wrap img {
+      width: 100%; height: 100%; object-fit: cover; display: block;
+      opacity: 0; transition: opacity .4s;
+    }
+    .preview-wrap img.loaded { opacity: 1; }
+    .preview-placeholder {
+      position: absolute; inset: 0; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 10px;
+      color: var(--muted); font-size: .85rem; text-align: center; padding: 20px;
+    }
+    .preview-placeholder svg { opacity: .35; }
+    .preview-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(14,45,66,.8) 0%, transparent 55%);
+      opacity: 0; transition: opacity .3s;
+      display: flex; align-items: flex-end; padding: 14px;
+    }
+    .preview-wrap:hover .preview-overlay { opacity: 1; }
+    .preview-name { font-size: .88rem; font-weight: 800; color: #fff; }
+
+    /* FORM FIELDS */
+    .form-card { background: #fff; border: 1.5px solid var(--border); border-radius: var(--r); padding: 20px; box-shadow: 0 2px 12px rgba(14,45,66,.06); }
+    .field { margin-bottom: 16px; }
+    .field:last-child { margin-bottom: 0; }
+    label { display: block; font-size: .75rem; font-weight: 700; color: var(--muted); letter-spacing: .06em; text-transform: uppercase; margin-bottom: 6px; }
+    .field input, .field textarea, .field select {
+      width: 100%; padding: 10px 14px; border: 1.5px solid var(--border); border-radius: 10px;
+      font-size: .9rem; color: var(--text); background: var(--bg);
+      outline: none; font-family: inherit; transition: border-color .2s, box-shadow .2s;
+    }
+    .field input:focus, .field textarea:focus, .field select:focus {
+      border-color: var(--orange); box-shadow: 0 0 0 3px rgba(255,84,32,.1);
+    }
+    .field textarea { resize: vertical; min-height: 68px; line-height: 1.5; }
+    .field select { cursor: pointer; }
+    .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+    /* ADD BUTTON */
+    .add-btn {
+      width: 100%; padding: 15px; background: var(--orange); color: #fff;
+      border: none; border-radius: 12px; font-size: 1rem; font-weight: 800;
+      cursor: pointer; transition: background .15s, transform .15s, opacity .2s;
+      display: flex; align-items: center; justify-content: center; gap: 10px;
+      letter-spacing: .02em;
+    }
+    .add-btn:hover:not(:disabled) { background: var(--og); transform: translateY(-2px); }
+    .add-btn:active:not(:disabled) { transform: scale(.97); }
+    .add-btn:disabled { opacity: .4; cursor: not-allowed; transform: none; }
+
+    /* SUCCESS / CODE SNIPPET */
+    .success-box {
+      display: none; background: #f0fdf4; border: 1.5px solid #86efac;
+      border-radius: var(--r); padding: 20px; margin-top: 20px;
+    }
+    .success-box.show { display: block; }
+    .success-title { font-size: .88rem; font-weight: 800; color: #16a34a; margin-bottom: 12px; display: flex; align-items: center; gap: 6px; }
+    .code-block {
+      background: var(--navy); color: #a8d8f0; font-family: "SF Mono", "Fira Code", monospace;
+      font-size: .78rem; padding: 14px 16px; border-radius: 8px; line-height: 1.7;
+      overflow-x: auto; position: relative; margin-bottom: 12px;
+    }
+    .code-block .k  { color: #ff7a55; }
+    .code-block .s  { color: #a8d8f0; }
+    .code-block .v  { color: #7dd3fc; }
+    .copy-btn {
+      position: absolute; top: 8px; right: 8px; background: rgba(255,255,255,.1);
+      border: 1px solid rgba(255,255,255,.2); color: #fff; font-size: .7rem; font-weight: 700;
+      padding: 4px 10px; border-radius: 6px; cursor: pointer; transition: background .15s;
+    }
+    .copy-btn:hover { background: rgba(255,255,255,.2); }
+    .copy-btn.copied { background: var(--green); border-color: var(--green); }
+    .success-note { font-size: .8rem; color: #166534; line-height: 1.5; }
+    .success-note b { color: #15803d; }
+
+    /* ADD ANOTHER */
+    .another-btn {
+      margin-top: 12px; width: 100%; padding: 11px; background: transparent;
+      border: 1.5px solid var(--border); color: var(--muted); border-radius: 10px;
+      font-size: .88rem; font-weight: 700; cursor: pointer; transition: border-color .2s, color .2s;
+    }
+    .another-btn:hover { border-color: var(--orange); color: var(--orange); }
+
+    footer { text-align: center; padding: 28px 20px; font-size: .78rem; color: var(--muted); border-top: 1.5px solid #ddeaf0; }
+    footer b { color: var(--orange); font-weight: 800; }
+    @supports (padding-bottom: env(safe-area-inset-bottom)) {
+      footer { padding-bottom: calc(28px + env(safe-area-inset-bottom)); }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-dots"><div class="nd"></div><div class="nd"></div><div class="nd"></div></div>
+  <div class="brand">The <span>OGs</span></div>
+  <div class="nav-right"><a class="back-link" href="/">← Gallery</a></div>
+</nav>
+
+<section class="hero">
+  <p class="hero-eye">✦ Add a Memory</p>
+  <h1>Drop a <em>photo link</em></h1>
+  <p class="hero-sub">Paste a Google Drive share link — preview it, name it, add it.</p>
+</section>
+
+<main class="page">
+
+  <!-- STEP 1: Paste link -->
+  <div class="step-label">Step 1 · Paste your Google Drive share link</div>
+  <div class="card">
+    <div class="link-row">
+      <input
+        class="link-input" id="linkInput" type="url"
+        placeholder="https://drive.google.com/file/d/.../view?usp=sharing"
+        autocomplete="off" spellcheck="false"
+      />
+      <button class="check-btn" id="checkBtn" onclick="loadPreview()">Preview</button>
+    </div>
+    <p class="link-hint">
+      Share the file in Drive as <code>Anyone with the link</code>, then paste the URL above.
+    </p>
+    <div class="status" id="status">
+      <div class="spin" id="statusSpin"></div>
+      <span id="statusText"></span>
+    </div>
+  </div>
+
+  <!-- STEP 2: Preview + details -->
+  <div class="step-label">Step 2 · Preview &amp; add details</div>
+  <div class="preview-form">
+
+    <!-- Preview -->
+    <div class="preview-wrap" id="previewWrap">
+      <div class="preview-placeholder" id="placeholder">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2">
+          <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/>
+          <polyline points="21 15 16 10 5 21"/>
+        </svg>
+        <span>Your photo preview<br>will appear here</span>
+      </div>
+      <img id="previewImg" src="" alt="" onload="onImgLoad()" onerror="onImgError()" />
+      <div class="preview-overlay">
+        <div class="preview-name" id="previewName"></div>
+      </div>
+    </div>
+
+    <!-- Form -->
+    <div class="form-card">
+      <div class="field">
+        <label>Photo name</label>
+        <input type="text" id="fieldName" placeholder="e.g. The Whole Squad" oninput="updatePreviewName()" />
+      </div>
+      <div class="field">
+        <label>Caption / note</label>
+        <textarea id="fieldCaption" placeholder="e.g. Every legend in one frame."></textarea>
+      </div>
+      <div class="row-2">
+        <div class="field">
+          <label>Size</label>
+          <select id="fieldSize">
+            <option value="sq">Square (1×1)</option>
+            <option value="tall">Tall (1×2)</option>
+            <option value="wide">Wide (2×1)</option>
+            <option value="big">Big (2×2)</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Tilt</label>
+          <select id="fieldTilt">
+            <option value="">None</option>
+            <option value="tl">Left slight</option>
+            <option value="tr">Right slight</option>
+            <option value="tll">Left more</option>
+            <option value="trr">Right more</option>
+          </select>
+        </div>
+      </div>
+      <button class="add-btn" id="addBtn" disabled onclick="addToGallery()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Add to Gallery
+      </button>
+    </div>
+
+  </div>
+
+  <!-- SUCCESS -->
+  <div class="success-box" id="successBox">
+    <div class="success-title">✓ Ready to add to your gallery!</div>
+    <div class="code-block" id="codeBlock">
+      <button class="copy-btn" id="copyBtn" onclick="copyCode()">Copy</button>
+      <span id="codeText"></span>
+    </div>
+    <p class="success-note">
+      Open <b>index.html</b> in GitHub → find the <b>photos</b> array → paste this line inside it → commit. Done! 🎉
+    </p>
+    <button class="another-btn" onclick="resetForm()">+ Add another photo</button>
+  </div>
+
+</main>
+
+<footer>Made with ❤️ by <b>The OGs</b> · Always and forever</footer>
+
+<script>
+  let currentId = '';
+
+  // ── EXTRACT DRIVE FILE ID ─────────────────────────────
+  function extractId(url) {
+    const m = url.match(/\/d\/([a-zA-Z0-9_-]{20,})/);
+    return m ? m[1] : null;
+  }
+
+  // ── LOAD PREVIEW ──────────────────────────────────────
+  function loadPreview() {
+    const url = document.getElementById('linkInput').value.trim();
+    const id  = extractId(url);
+    const status = document.getElementById('status');
+    const statusText = document.getElementById('statusText');
+
+    if (!id) {
+      showStatus('err', '⚠️ Couldn\'t find a file ID — paste a full Google Drive share link.');
+      return;
+    }
+
+    currentId = id;
+    showStatus('loading', 'Loading preview…');
+    document.getElementById('addBtn').disabled = true;
+
+    const img = document.getElementById('previewImg');
+    img.classList.remove('loaded');
+    img.src = `https://drive.google.com/thumbnail?id=${id}&sz=w1000`;
+
+    document.getElementById('placeholder').style.display = 'none';
+  }
+
+  function onImgLoad() {
+    showStatus('ok', '✓ Image loaded — fill in the details and add it.');
+    document.getElementById('previewImg').classList.add('loaded');
+    document.getElementById('addBtn').disabled = false;
+    document.getElementById('successBox').classList.remove('show');
+  }
+
+  function onImgError() {
+    showStatus('err', '⚠️ Could not load image — make sure the file is shared as "Anyone with the link".');
+    document.getElementById('placeholder').style.display = '';
+    document.getElementById('addBtn').disabled = true;
+  }
+
+  function showStatus(type, msg) {
+    const s    = document.getElementById('status');
+    const spin = document.getElementById('statusSpin');
+    const text = document.getElementById('statusText');
+    s.className = 'status show ' + type;
+    spin.style.display = type === 'loading' ? '' : 'none';
+    text.textContent = msg;
+  }
+
+  // ── LIVE NAME PREVIEW ─────────────────────────────────
+  function updatePreviewName() {
+    document.getElementById('previewName').textContent = document.getElementById('fieldName').value;
+  }
+
+  // ── ADD TO GALLERY ────────────────────────────────────
+  function addToGallery() {
+    const name    = document.getElementById('fieldName').value.trim()    || 'OG Memory';
+    const caption = document.getElementById('fieldCaption').value.trim() || 'A memory with the OGs.';
+    const size    = document.getElementById('fieldSize').value;
+    const tilt    = document.getElementById('fieldTilt').value;
+
+    const tiltPart = tilt ? `, tilt:'${tilt}'` : ``;
+    const line = `  { id:'${currentId}', name:'${esc(name)}', caption:'${esc(caption)}', size:'${size}'${tiltPart} },`;
+
+    document.getElementById('codeText').innerHTML = formatCode(line);
+    document.getElementById('successBox').classList.add('show');
+    document.getElementById('successBox').scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+    // auto-copy
+    navigator.clipboard?.writeText(line);
+    const btn = document.getElementById('copyBtn');
+    btn.textContent = 'Copied!';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2500);
+  }
+
+  function copyCode() {
+    const name    = document.getElementById('fieldName').value.trim()    || 'OG Memory';
+    const caption = document.getElementById('fieldCaption').value.trim() || 'A memory with the OGs.';
+    const size    = document.getElementById('fieldSize').value;
+    const tilt    = document.getElementById('fieldTilt').value;
+    const tiltPart = tilt ? `, tilt:'${tilt}'` : ``;
+    const line = `  { id:'${currentId}', name:'${esc(name)}', caption:'${esc(caption)}', size:'${size}'${tiltPart} },`;
+    navigator.clipboard.writeText(line);
+    const btn = document.getElementById('copyBtn');
+    btn.textContent = 'Copied!'; btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2500);
+  }
+
+  function formatCode(line) {
+    return line
+      .replace(/\{/g, '<span class="k">{</span>')
+      .replace(/\}/g, '<span class="k">}</span>')
+      .replace(/'([^']*)'/g, "<span class=\"v\">'$1'</span>")
+      .replace(/(\w+)(?=:)/g, '<span class="s">$1</span>');
+  }
+
+  function esc(s) { return s.replace(/'/g, "\\'"); }
+
+  // ── RESET ─────────────────────────────────────────────
+  function resetForm() {
+    document.getElementById('linkInput').value   = '';
+    document.getElementById('fieldName').value   = '';
+    document.getElementById('fieldCaption').value= '';
+    document.getElementById('fieldSize').value   = 'sq';
+    document.getElementById('fieldTilt').value   = '';
+    document.getElementById('previewImg').src    = '';
+    document.getElementById('previewImg').classList.remove('loaded');
+    document.getElementById('previewName').textContent = '';
+    document.getElementById('placeholder').style.display = '';
+    document.getElementById('status').className  = 'status';
+    document.getElementById('addBtn').disabled   = true;
+    document.getElementById('successBox').classList.remove('show');
+    document.getElementById('linkInput').focus();
+    currentId = '';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  // Trigger on Enter key
+  document.getElementById('linkInput').addEventListener('keydown', e => {
+    if (e.key === 'Enter') loadPreview();
+  });
+
+  // Auto-trigger if user pastes a full URL
+  document.getElementById('linkInput').addEventListener('paste', e => {
+    setTimeout(() => {
+      if (document.getElementById('linkInput').value.includes('drive.google.com')) loadPreview();
+    }, 50);
+  });
+</script>
+</body>
+</html>

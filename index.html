@@ -5,24 +5,42 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <meta name="theme-color" content="#0E2D42" />
   <title>The OGs</title>
+
+  <!-- Firebase compat SDK (works in plain HTML, no bundler needed) -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
+
+  <script>
+    // ── Firebase config ──────────────────────────────────
+    firebase.initializeApp({
+      apiKey:            "AIzaSyCrpZSX_tyE6QKLccCXWol_ho7RiO2zt9s",
+      authDomain:        "customnotion-4e7d5.firebaseapp.com",
+      projectId:         "customnotion-4e7d5",
+      storageBucket:     "customnotion-4e7d5.firebasestorage.app",
+      messagingSenderId: "175870774696",
+      appId:             "1:175870774696:web:856f02763f0e230cba619d"
+    });
+    const db      = firebase.firestore();
+    const storage = firebase.storage();
+    const COL     = "memories";
+  </script>
+
   <style>
-    /* ── TOKENS ────────────────────────────────────────── */
     :root {
       --navy:       #0E2D42;
       --navy-deep:  #091e2e;
       --navy-mid:   #163b55;
       --navy-light: #1f4f72;
       --orange:     #FF5420;
-      --orange-dim: #cc431a;
       --orange-glow:#ff7a55;
       --cream:      #fdf7f4;
       --text-main:  #f0ebe8;
       --text-muted: #9eb5c5;
+      --green:      #22c55e;
       --radius:     14px;
       --nav-h:      64px;
     }
-
-    /* ── RESET ─────────────────────────────────────────── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
     body {
@@ -32,11 +50,9 @@
       min-height: 100dvh;
     }
 
-    /* ── NAVBAR ────────────────────────────────────────── */
+    /* NAV */
     nav {
-      position: sticky;
-      top: 0;
-      z-index: 100;
+      position: sticky; top: 0; z-index: 100;
       height: var(--nav-h);
       background: var(--navy);
       border-bottom: 2px solid var(--orange);
@@ -47,115 +63,87 @@
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
     }
-    .nav-left { display: flex; gap: 6px; align-items: center; }
-    .nav-dot {
-      width: 10px; height: 10px; border-radius: 50%;
-      background: var(--orange); opacity: 0.7;
+    .nav-left { display: flex; align-items: center; gap: 8px; }
+    .nav-status { display: flex; align-items: center; gap: 6px; }
+    .status-dot {
+      width: 9px; height: 9px; border-radius: 50%;
+      background: var(--text-muted);
+      transition: background 0.4s, box-shadow 0.4s;
     }
-    .nav-dot:nth-child(2) { opacity: 0.4; background: var(--text-muted); }
-    .nav-dot:nth-child(3) { opacity: 0.2; background: var(--text-muted); }
+    .status-dot.live   { background: var(--green); box-shadow: 0 0 7px var(--green); }
+    .status-dot.error  { background: var(--orange); }
+    .status-label { font-size: 0.7rem; color: var(--text-muted); }
 
     .nav-brand {
-      font-size: 1.45rem;
-      font-weight: 800;
-      letter-spacing: 0.04em;
-      text-align: center;
-      color: var(--cream);
-      white-space: nowrap;
+      font-size: 1.45rem; font-weight: 900; letter-spacing: 0.04em;
+      text-align: center; color: var(--cream); white-space: nowrap;
     }
     .nav-brand span { color: var(--orange); }
 
-    .nav-right { display: flex; justify-content: flex-end; align-items: center; gap: 14px; }
+    .nav-right { display: flex; justify-content: flex-end; }
     .nav-count {
-      font-size: 0.78rem;
-      color: var(--text-muted);
-      background: var(--navy-light);
-      padding: 3px 10px;
-      border-radius: 20px;
-      font-weight: 600;
+      font-size: 0.78rem; color: var(--text-muted);
+      background: var(--navy-light); padding: 3px 10px;
+      border-radius: 20px; font-weight: 600;
     }
     .nav-count b { color: var(--orange); }
 
-    /* ── HERO ──────────────────────────────────────────── */
+    /* HERO */
     .hero {
-      text-align: center;
-      padding: 60px 24px 40px;
+      text-align: center; padding: 60px 24px 40px;
       background: linear-gradient(170deg, var(--navy-mid) 0%, var(--navy-deep) 60%);
-      position: relative;
-      overflow: hidden;
+      position: relative; overflow: hidden;
     }
     .hero::before {
-      content: '';
-      position: absolute;
-      inset: 0;
+      content: ''; position: absolute; inset: 0;
       background: radial-gradient(ellipse 70% 50% at 50% 0%, rgba(255,84,32,0.12) 0%, transparent 70%);
       pointer-events: none;
     }
     .hero-eyebrow {
-      font-size: 0.78rem;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--orange);
-      font-weight: 700;
-      margin-bottom: 12px;
+      font-size: 0.78rem; letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--orange); font-weight: 700; margin-bottom: 12px;
     }
     .hero h1 {
-      font-size: clamp(2.2rem, 8vw, 4rem);
-      font-weight: 900;
-      line-height: 1.1;
-      letter-spacing: -0.02em;
-      margin-bottom: 14px;
+      font-size: clamp(2.2rem, 8vw, 4rem); font-weight: 900;
+      line-height: 1.1; letter-spacing: -0.02em; margin-bottom: 14px;
     }
     .hero h1 em { color: var(--orange); font-style: normal; }
     .hero p {
-      color: var(--text-muted);
-      font-size: 1rem;
-      max-width: 420px;
-      margin: 0 auto 32px;
-      line-height: 1.6;
+      color: var(--text-muted); font-size: 1rem;
+      max-width: 420px; margin: 0 auto 32px; line-height: 1.6;
     }
 
-    /* ── UPLOAD ZONE ───────────────────────────────────── */
-    .upload-zone {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 14px;
-    }
+    /* UPLOAD */
+    .upload-zone { display: flex; flex-direction: column; align-items: center; gap: 14px; }
     .upload-btn {
-      position: relative;
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      background: var(--orange);
-      color: #fff;
-      font-size: 1rem;
-      font-weight: 700;
-      padding: 14px 28px;
-      border-radius: 50px;
-      cursor: pointer;
-      border: none;
-      transition: transform 0.15s, box-shadow 0.15s, background 0.15s;
+      position: relative; display: inline-flex; align-items: center; gap: 10px;
+      background: var(--orange); color: #fff;
+      font-size: 1rem; font-weight: 700;
+      padding: 14px 28px; border-radius: 50px;
+      cursor: pointer; border: none;
+      transition: transform 0.15s, box-shadow 0.15s, background 0.15s, opacity 0.15s;
       box-shadow: 0 6px 24px rgba(255,84,32,0.35);
       overflow: hidden;
     }
-    .upload-btn:hover { background: var(--orange-glow); transform: translateY(-2px); box-shadow: 0 10px 32px rgba(255,84,32,0.45); }
-    .upload-btn:active { transform: scale(0.97); }
-    .upload-btn svg { flex-shrink: 0; }
-    .upload-btn input[type="file"] {
-      position: absolute; inset: 0; opacity: 0; cursor: pointer; font-size: 0;
-    }
-
+    .upload-btn:hover:not(:disabled) { background: var(--orange-glow); transform: translateY(-2px); box-shadow: 0 10px 32px rgba(255,84,32,0.45); }
+    .upload-btn:active:not(:disabled) { transform: scale(0.97); }
+    .upload-btn:disabled { opacity: 0.55; cursor: not-allowed; }
+    .upload-btn input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; font-size: 0; }
     .upload-hint { font-size: 0.8rem; color: var(--text-muted); }
 
-    /* drop overlay */
-    .drop-overlay {
+    .progress-wrap {
+      width: 100%; max-width: 300px; height: 5px;
+      background: var(--navy-light); border-radius: 20px; overflow: hidden;
       display: none;
-      position: fixed; inset: 0; z-index: 200;
-      background: rgba(14,45,66,0.85);
-      backdrop-filter: blur(6px);
-      align-items: center; justify-content: center;
-      flex-direction: column; gap: 16px;
+    }
+    .progress-wrap.active { display: block; }
+    .progress-bar { height: 100%; background: var(--orange); border-radius: 20px; width: 0%; transition: width 0.2s; }
+
+    /* DROP OVERLAY */
+    .drop-overlay {
+      display: none; position: fixed; inset: 0; z-index: 200;
+      background: rgba(14,45,66,0.88); backdrop-filter: blur(6px);
+      align-items: center; justify-content: center; flex-direction: column; gap: 16px;
     }
     .drop-overlay.active { display: flex; }
     .drop-ring {
@@ -167,11 +155,9 @@
     @keyframes pulse { from { transform: scale(1); } to { transform: scale(1.06); } }
     .drop-label { font-size: 1.2rem; font-weight: 700; color: var(--orange-glow); }
 
-    /* ── GALLERY ───────────────────────────────────────── */
+    /* GALLERY */
     .section { padding: 40px 20px 60px; max-width: 1200px; margin: 0 auto; }
-    .section-header {
-      display: flex; align-items: center; gap: 14px; margin-bottom: 28px; flex-wrap: wrap;
-    }
+    .section-header { display: flex; align-items: center; gap: 14px; margin-bottom: 28px; flex-wrap: wrap; }
     .section-title { font-size: 1.3rem; font-weight: 800; }
     .section-line { flex: 1; height: 1px; background: linear-gradient(90deg, var(--orange) 0%, transparent 100%); min-width: 40px; }
     .section-badge {
@@ -180,7 +166,6 @@
       border: 1px solid var(--orange); border-radius: 20px; padding: 3px 10px;
     }
 
-    /* empty state */
     .empty-state {
       text-align: center; padding: 60px 20px;
       border: 2px dashed var(--navy-light); border-radius: var(--radius);
@@ -190,36 +175,26 @@
     .empty-state p { font-size: 0.95rem; line-height: 1.6; }
     .empty-state b { color: var(--orange-glow); }
 
-    /* grid */
     .gallery-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
       gap: 18px;
     }
 
-    /* card */
     .memory-card {
-      position: relative;
-      border-radius: var(--radius);
-      overflow: hidden;
+      position: relative; border-radius: var(--radius); overflow: hidden;
       background: var(--navy-mid);
       box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-      cursor: pointer;
-      transition: transform 0.2s, box-shadow 0.2s;
+      cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;
       aspect-ratio: 4/3;
     }
     .memory-card:hover { transform: translateY(-4px) scale(1.01); box-shadow: 0 12px 36px rgba(255,84,32,0.2); }
-    .memory-card img {
-      width: 100%; height: 100%; object-fit: cover;
-      display: block;
-      transition: transform 0.4s;
-    }
+    .memory-card img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.4s; }
     .memory-card:hover img { transform: scale(1.05); }
-    .memory-card .card-overlay {
+    .card-overlay {
       position: absolute; inset: 0;
       background: linear-gradient(to top, rgba(9,30,46,0.85) 0%, transparent 50%);
-      opacity: 0;
-      transition: opacity 0.2s;
+      opacity: 0; transition: opacity 0.2s;
       display: flex; flex-direction: column; justify-content: flex-end; padding: 14px;
     }
     .memory-card:hover .card-overlay { opacity: 1; }
@@ -234,8 +209,6 @@
     }
     .memory-card:hover .card-delete { opacity: 1; }
     .card-delete:hover { background: var(--orange); }
-
-    /* NEW badge on latest card */
     .card-new {
       position: absolute; top: 10px; left: 10px;
       font-size: 0.65rem; font-weight: 800; letter-spacing: 0.1em;
@@ -243,31 +216,37 @@
       background: var(--orange); border-radius: 20px; padding: 3px 9px;
     }
 
-    /* ── LIGHTBOX ──────────────────────────────────────── */
+    /* skeleton */
+    .skeleton {
+      border-radius: var(--radius); aspect-ratio: 4/3;
+      background: linear-gradient(90deg, var(--navy-mid) 25%, var(--navy-light) 50%, var(--navy-mid) 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.4s infinite;
+    }
+    @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+
+    /* LIGHTBOX */
     .lightbox {
       display: none; position: fixed; inset: 0; z-index: 300;
-      background: rgba(9,30,46,0.95);
+      background: rgba(9,30,46,0.96);
       align-items: center; justify-content: center;
-      padding: 20px;
-      flex-direction: column; gap: 16px;
+      padding: 20px; flex-direction: column; gap: 16px;
     }
     .lightbox.open { display: flex; }
     .lightbox img {
       max-width: 100%; max-height: 80dvh;
-      border-radius: var(--radius);
-      object-fit: contain;
+      border-radius: var(--radius); object-fit: contain;
       box-shadow: 0 20px 60px rgba(0,0,0,0.6);
     }
     .lightbox-close {
       position: absolute; top: 16px; right: 20px;
       background: none; border: none; cursor: pointer;
-      color: var(--text-muted); font-size: 1.8rem; line-height: 1;
-      transition: color 0.15s;
+      color: var(--text-muted); font-size: 1.8rem; line-height: 1; transition: color 0.15s;
     }
     .lightbox-close:hover { color: var(--orange); }
     .lightbox-caption { font-size: 0.9rem; color: var(--text-muted); text-align: center; }
 
-    /* ── TOAST ─────────────────────────────────────────── */
+    /* TOAST */
     #toast {
       position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%) translateY(80px);
       background: var(--navy-light); color: var(--text-main);
@@ -279,17 +258,13 @@
     }
     #toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
 
-    /* ── FOOTER ────────────────────────────────────────── */
     footer {
-      text-align: center;
-      padding: 24px 20px;
-      font-size: 0.78rem;
-      color: var(--text-muted);
+      text-align: center; padding: 24px 20px;
+      font-size: 0.78rem; color: var(--text-muted);
       border-top: 1px solid var(--navy-light);
     }
     footer span { color: var(--orange); }
 
-    /* ── MOBILE TWEAKS ─────────────────────────────────── */
     @media (max-width: 480px) {
       .nav-brand { font-size: 1.2rem; }
       .nav-count { display: none; }
@@ -299,40 +274,20 @@
     @media (min-width: 900px) {
       .gallery-grid { grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
     }
-
-    /* safe area for notched phones */
     @supports (padding-bottom: env(safe-area-inset-bottom)) {
       footer { padding-bottom: calc(24px + env(safe-area-inset-bottom)); }
     }
   </style>
-  <script type="module">
-  // Import the functions you need from the SDKs you need
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
-  // TODO: Add SDKs for Firebase products that you want to use
-  // https://firebase.google.com/docs/web/setup#available-libraries
-
-  // Your web app's Firebase configuration
-  const firebaseConfig = {
-    apiKey: "AIzaSyCrpZSX_tyE6QKLccCXWol_ho7RiO2zt9s",
-    authDomain: "customnotion-4e7d5.firebaseapp.com",
-    projectId: "customnotion-4e7d5",
-    storageBucket: "customnotion-4e7d5.firebasestorage.app",
-    messagingSenderId: "175870774696",
-    appId: "1:175870774696:web:856f02763f0e230cba619d"
-  };
-
-  // Initialize Firebase
-  const app = initializeApp(firebaseConfig);
-</script>
 </head>
 <body>
 
-<!-- ───────── NAV ───────── -->
+<!-- NAV -->
 <nav>
   <div class="nav-left">
-    <div class="nav-dot"></div>
-    <div class="nav-dot"></div>
-    <div class="nav-dot"></div>
+    <div class="nav-status">
+      <div class="status-dot" id="statusDot"></div>
+      <span class="status-label" id="statusLabel">connecting…</span>
+    </div>
   </div>
   <div class="nav-brand">The <span>OGs</span></div>
   <div class="nav-right">
@@ -340,26 +295,29 @@
   </div>
 </nav>
 
-<!-- ───────── HERO ───────── -->
-<section class="hero" id="top">
-  <p class="hero-eyebrow">📸 Your Private Gallery</p>
+<!-- HERO -->
+<section class="hero">
+  <p class="hero-eyebrow">📸 Shared Gallery</p>
   <h1>Keep the <em>Memories</em><br>alive, OG.</h1>
-  <p>Upload photos and they'll live right here — just for you and the crew.</p>
+  <p>Upload from any device — it shows up for everyone instantly.</p>
   <div class="upload-zone">
-    <label class="upload-btn" tabindex="0">
+    <label class="upload-btn" id="uploadBtn">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
         <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
         <polyline points="17 8 12 3 7 8"/>
         <line x1="12" y1="3" x2="12" y2="15"/>
       </svg>
-      Add Memories
+      <span id="uploadBtnText">Add Memories</span>
       <input type="file" id="fileInput" accept="image/*" multiple />
     </label>
+    <div class="progress-wrap" id="progressWrap">
+      <div class="progress-bar" id="progressBar"></div>
+    </div>
     <p class="upload-hint">or drag &amp; drop anywhere · JPG, PNG, GIF, WEBP</p>
   </div>
 </section>
 
-<!-- ───────── GALLERY ───────── -->
+<!-- GALLERY -->
 <main class="section">
   <div class="section-header">
     <h2 class="section-title">Our Memories</h2>
@@ -371,12 +329,12 @@
       <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/>
       <polyline points="21 15 16 10 5 21"/>
     </svg>
-    <p>No memories yet.<br><b>Upload your first photo</b> and start the gallery.</p>
+    <p>No memories yet.<br><b>Upload the first photo</b> — it'll appear here on every device.</p>
   </div>
   <div class="gallery-grid" id="gallery" style="display:none;"></div>
 </main>
 
-<!-- ───────── DROP OVERLAY ───────── -->
+<!-- DROP OVERLAY -->
 <div class="drop-overlay" id="dropOverlay">
   <div class="drop-ring">
     <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#FF5420" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -387,132 +345,185 @@
   <p class="drop-label">Drop photos here</p>
 </div>
 
-<!-- ───────── LIGHTBOX ───────── -->
+<!-- LIGHTBOX -->
 <div class="lightbox" id="lightbox" role="dialog" aria-modal="true">
   <button class="lightbox-close" id="lbClose" aria-label="Close">✕</button>
   <img id="lbImg" src="" alt="" />
   <p class="lightbox-caption" id="lbCaption"></p>
 </div>
 
-<!-- ───────── TOAST ───────── -->
+<!-- TOAST -->
 <div id="toast" role="status" aria-live="polite"></div>
 
-<!-- ───────── FOOTER ───────── -->
-<footer>Made with ❤️ by <span>The OGs</span> · Hosted on GitHub Pages</footer>
+<footer>Made with ❤️ by <span>The OGs</span> · Synced live across all devices</footer>
 
 <script>
-  // ── STATE ──────────────────────────────────────────────
-  let memories = []; // { id, src, name, time }
+  const $ = id => document.getElementById(id);
 
-  // ── ELEMENTS ───────────────────────────────────────────
-  const gallery     = document.getElementById('gallery');
-  const emptyState  = document.getElementById('emptyState');
-  const memBadge    = document.getElementById('memBadge');
-  const navCount    = document.getElementById('navCount');
-  const fileInput   = document.getElementById('fileInput');
-  const lightbox    = document.getElementById('lightbox');
-  const lbImg       = document.getElementById('lbImg');
-  const lbCaption   = document.getElementById('lbCaption');
-  const lbClose     = document.getElementById('lbClose');
-  const dropOverlay = document.getElementById('dropOverlay');
-  const toast       = document.getElementById('toast');
+  const gallery      = $('gallery');
+  const emptyState   = $('emptyState');
+  const memBadge     = $('memBadge');
+  const navCount     = $('navCount');
+  const fileInput    = $('fileInput');
+  const lightbox     = $('lightbox');
+  const lbImg        = $('lbImg');
+  const lbCaption    = $('lbCaption');
+  const lbClose      = $('lbClose');
+  const dropOverlay  = $('dropOverlay');
+  const statusDot    = $('statusDot');
+  const statusLabel  = $('statusLabel');
+  const uploadBtn    = $('uploadBtn');
+  const uploadBtnText= $('uploadBtnText');
+  const progressWrap = $('progressWrap');
+  const progressBar  = $('progressBar');
 
   // ── TOAST ──────────────────────────────────────────────
   let toastTimer;
   function showToast(msg) {
-    toast.textContent = msg;
-    toast.classList.add('show');
+    const t = $('toast');
+    t.textContent = msg;
+    t.classList.add('show');
     clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => toast.classList.remove('show'), 2800);
+    toastTimer = setTimeout(() => t.classList.remove('show'), 3000);
   }
 
+  // ── STATUS ─────────────────────────────────────────────
+  function setStatus(cls, label) {
+    statusDot.className = 'status-dot' + (cls ? ' ' + cls : '');
+    statusLabel.textContent = label;
+  }
+
+  // ── REAL-TIME LISTENER ─────────────────────────────────
+  db.collection(COL)
+    .orderBy('createdAt', 'desc')
+    .onSnapshot(snap => {
+      setStatus('live', 'Live');
+      const docs = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      render(docs);
+    }, err => {
+      console.error(err);
+      setStatus('error', 'Offline');
+      showToast('⚠️ Firebase error — check console or Firestore rules.');
+    });
+
   // ── RENDER ─────────────────────────────────────────────
-  function render() {
-    const count = memories.length;
+  function render(docs) {
+    const count = docs.length;
     memBadge.textContent = `${count} photo${count !== 1 ? 's' : ''}`;
     navCount.innerHTML   = `<b>${count}</b> Memor${count !== 1 ? 'ies' : 'y'}`;
     emptyState.style.display = count ? 'none' : '';
     gallery.style.display    = count ? '' : 'none';
 
     gallery.innerHTML = '';
-    memories.slice().reverse().forEach((mem, revIdx) => {
-      const isNew = revIdx === 0;
-      const card  = document.createElement('div');
+    docs.forEach((mem, idx) => {
+      const isNew = idx === 0;
+      const timeStr = mem.createdAt
+        ? new Date(mem.createdAt.seconds * 1000).toLocaleString('en-US', {
+            month: 'short', day: 'numeric', year: 'numeric',
+            hour: '2-digit', minute: '2-digit'
+          })
+        : 'Just now';
+
+      const card = document.createElement('div');
       card.className = 'memory-card';
       card.innerHTML = `
         ${isNew ? '<div class="card-new">New</div>' : ''}
-        <img src="${mem.src}" alt="${mem.name}" loading="lazy" />
+        <img src="${mem.url}" alt="${mem.name}" loading="lazy" />
         <div class="card-overlay">
           <div class="card-name">${mem.name}</div>
-          <div class="card-time">${mem.time}</div>
+          <div class="card-time">${timeStr}</div>
         </div>
-        <button class="card-delete" data-id="${mem.id}" title="Remove" aria-label="Remove memory">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        <button class="card-delete" title="Remove" aria-label="Remove memory">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round">
+            <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
         </button>
       `;
-      card.querySelector('img').addEventListener('click', () => openLightbox(mem));
-      card.querySelector('.card-overlay').addEventListener('click', () => openLightbox(mem));
-      card.querySelector('.card-delete').addEventListener('click', (e) => {
-        e.stopPropagation(); deleteMemory(mem.id);
+      card.querySelector('img').addEventListener('click', () => openLightbox(mem.url, mem.name, timeStr));
+      card.querySelector('.card-overlay').addEventListener('click', () => openLightbox(mem.url, mem.name, timeStr));
+      card.querySelector('.card-delete').addEventListener('click', e => {
+        e.stopPropagation();
+        deleteMemory(mem.id, mem.storagePath);
       });
       gallery.appendChild(card);
     });
   }
 
-  // ── ADD MEMORIES ───────────────────────────────────────
-  function addFiles(files) {
-    const toAdd = [...files].filter(f => f.type.startsWith('image/'));
-    if (!toAdd.length) { showToast('⚠️ Only image files are supported.'); return; }
-    let loaded = 0;
-    toAdd.forEach(file => {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const now = new Date();
-        const time = now.toLocaleString('en-US', {
-          month: 'short', day: 'numeric', year: 'numeric',
-          hour: '2-digit', minute: '2-digit'
-        });
-        memories.push({
-          id:   Math.random().toString(36).slice(2),
-          src:  e.target.result,
-          name: file.name.replace(/\.[^.]+$/, ''),
-          time
-        });
-        loaded++;
-        if (loaded === toAdd.length) {
-          render();
-          showToast(`🎉 Added ${toAdd.length} memor${toAdd.length > 1 ? 'ies' : 'y'}!`);
-          setTimeout(() => document.getElementById('gallery').scrollIntoView({ behavior: 'smooth', block: 'start' }), 300);
-        }
-      };
-      reader.readAsDataURL(file);
-    });
+  // ── UPLOAD ─────────────────────────────────────────────
+  async function uploadFiles(files) {
+    const images = [...files].filter(f => f.type.startsWith('image/'));
+    if (!images.length) { showToast('⚠️ Only image files please.'); return; }
+
+    uploadBtn.disabled = true;
+    fileInput.disabled = true;
+    progressWrap.classList.add('active');
+    progressBar.style.width = '0%';
+
+    let done = 0;
+    for (const file of images) {
+      uploadBtnText.textContent = `Uploading ${done + 1}/${images.length}…`;
+      const ref  = storage.ref(`${COL}/${Date.now()}_${file.name}`);
+      const task = ref.put(file);
+
+      await new Promise((resolve, reject) => {
+        task.on('state_changed',
+          snap => {
+            const pct = ((done + snap.bytesTransferred / snap.totalBytes) / images.length) * 100;
+            progressBar.style.width = Math.round(pct) + '%';
+          },
+          reject,
+          async () => {
+            const url = await task.snapshot.ref.getDownloadURL();
+            await db.collection(COL).add({
+              url,
+              name:        file.name.replace(/\.[^.]+$/, ''),
+              storagePath: task.snapshot.ref.fullPath,
+              createdAt:   firebase.firestore.FieldValue.serverTimestamp()
+            });
+            done++;
+            progressBar.style.width = Math.round((done / images.length) * 100) + '%';
+            resolve();
+          }
+        );
+      });
+    }
+
+    showToast(`🎉 Added ${images.length} memor${images.length > 1 ? 'ies' : 'y'}!`);
+    uploadBtn.disabled = false;
+    fileInput.disabled = false;
+    uploadBtnText.textContent = 'Add Memories';
+    progressWrap.classList.remove('active');
+    setTimeout(() => gallery.scrollIntoView({ behavior: 'smooth', block: 'start' }), 400);
   }
 
-  function deleteMemory(id) {
-    memories = memories.filter(m => m.id !== id);
-    render();
-    showToast('🗑 Memory removed.');
+  // ── DELETE ─────────────────────────────────────────────
+  async function deleteMemory(id, storagePath) {
+    try {
+      await db.collection(COL).doc(id).delete();
+      if (storagePath) await storage.ref(storagePath).delete().catch(() => {});
+      showToast('🗑 Memory removed.');
+    } catch (e) {
+      showToast('⚠️ Delete failed — check Firestore rules.');
+    }
   }
 
   // ── FILE INPUT ─────────────────────────────────────────
-  fileInput.addEventListener('change', () => { addFiles(fileInput.files); fileInput.value = ''; });
+  fileInput.addEventListener('change', () => { uploadFiles(fileInput.files); fileInput.value = ''; });
 
   // ── DRAG & DROP ────────────────────────────────────────
   let dragCounter = 0;
-  document.addEventListener('dragenter',  (e) => { e.preventDefault(); dragCounter++; dropOverlay.classList.add('active'); });
-  document.addEventListener('dragleave',  ()  => { dragCounter--; if (dragCounter <= 0) { dragCounter = 0; dropOverlay.classList.remove('active'); } });
-  document.addEventListener('dragover',   (e) => e.preventDefault());
-  document.addEventListener('drop', (e) => {
+  document.addEventListener('dragenter',  e => { e.preventDefault(); dragCounter++; dropOverlay.classList.add('active'); });
+  document.addEventListener('dragleave',  ()  => { if (--dragCounter <= 0) { dragCounter = 0; dropOverlay.classList.remove('active'); } });
+  document.addEventListener('dragover',   e => e.preventDefault());
+  document.addEventListener('drop', e => {
     e.preventDefault(); dragCounter = 0; dropOverlay.classList.remove('active');
-    addFiles(e.dataTransfer.files);
+    uploadFiles(e.dataTransfer.files);
   });
 
   // ── LIGHTBOX ───────────────────────────────────────────
-  function openLightbox(mem) {
-    lbImg.src      = mem.src;
-    lbImg.alt      = mem.name;
-    lbCaption.textContent = `${mem.name} · ${mem.time}`;
+  function openLightbox(url, name, time) {
+    lbImg.src = url; lbImg.alt = name;
+    lbCaption.textContent = `${name} · ${time}`;
     lightbox.classList.add('open');
     document.body.style.overflow = 'hidden';
   }
@@ -522,11 +533,8 @@
     lbImg.src = '';
   }
   lbClose.addEventListener('click', closeLightbox);
-  lightbox.addEventListener('click', (e) => { if (e.target === lightbox) closeLightbox(); });
-  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeLightbox(); });
-
-  // ── INIT ───────────────────────────────────────────────
-  render();
+  lightbox.addEventListener('click', e => { if (e.target === lightbox) closeLightbox(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
 </script>
 </body>
 </html>

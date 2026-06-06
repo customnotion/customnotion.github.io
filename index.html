@@ -5,536 +5,413 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <meta name="theme-color" content="#0E2D42" />
   <title>The OGs</title>
-
-  <!-- Firebase compat SDK (works in plain HTML, no bundler needed) -->
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
-
-  <script>
-    // ── Firebase config ──────────────────────────────────
-    firebase.initializeApp({
-      apiKey:            "AIzaSyCrpZSX_tyE6QKLccCXWol_ho7RiO2zt9s",
-      authDomain:        "customnotion-4e7d5.firebaseapp.com",
-      projectId:         "customnotion-4e7d5",
-      storageBucket:     "customnotion-4e7d5.firebasestorage.app",
-      messagingSenderId: "175870774696",
-      appId:             "1:175870774696:web:856f02763f0e230cba619d"
-    });
-    const db      = firebase.firestore();
-    const storage = firebase.storage();
-    const COL     = "memories";
-  </script>
-
   <style>
     :root {
-      --navy:       #0E2D42;
-      --navy-deep:  #091e2e;
-      --navy-mid:   #163b55;
-      --navy-light: #1f4f72;
-      --orange:     #FF5420;
-      --orange-glow:#ff7a55;
-      --cream:      #fdf7f4;
-      --text-main:  #f0ebe8;
-      --text-muted: #9eb5c5;
-      --green:      #22c55e;
-      --radius:     14px;
-      --nav-h:      64px;
+      --navy:   #0E2D42;
+      --orange: #FF5420;
+      --og:     #ff7a55;
+      --bg:     #FEFCFF;
+      --text:   #0E2D42;
+      --muted:  #5a7a90;
+      --r:      14px;
     }
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      background: var(--navy-deep);
-      color: var(--text-main);
-      min-height: 100dvh;
-    }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: var(--bg); color: var(--text); min-height: 100dvh; overflow-x: hidden; }
 
     /* NAV */
     nav {
       position: sticky; top: 0; z-index: 100;
-      height: var(--nav-h);
-      background: var(--navy);
-      border-bottom: 2px solid var(--orange);
-      display: grid;
-      grid-template-columns: 1fr auto 1fr;
-      align-items: center;
-      padding: 0 20px;
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
+      background: var(--navy); border-bottom: 3px solid var(--orange);
+      display: grid; grid-template-columns: 1fr auto 1fr;
+      align-items: center; padding: 0 24px; height: 62px;
     }
-    .nav-left { display: flex; align-items: center; gap: 8px; }
-    .nav-status { display: flex; align-items: center; gap: 6px; }
-    .status-dot {
-      width: 9px; height: 9px; border-radius: 50%;
-      background: var(--text-muted);
-      transition: background 0.4s, box-shadow 0.4s;
-    }
-    .status-dot.live   { background: var(--green); box-shadow: 0 0 7px var(--green); }
-    .status-dot.error  { background: var(--orange); }
-    .status-label { font-size: 0.7rem; color: var(--text-muted); }
-
-    .nav-brand {
-      font-size: 1.45rem; font-weight: 900; letter-spacing: 0.04em;
-      text-align: center; color: var(--cream); white-space: nowrap;
-    }
-    .nav-brand span { color: var(--orange); }
-
+    .nav-dots { display: flex; gap: 6px; align-items: center; }
+    .nd { width: 9px; height: 9px; border-radius: 50%; background: var(--orange); }
+    .nd:nth-child(2) { opacity: .5; background: #9eb5c5; }
+    .nd:nth-child(3) { opacity: .25; background: #9eb5c5; }
+    .brand { font-size: 1.5rem; font-weight: 900; letter-spacing: .04em; color: #FEFCFF; text-align: center; }
+    .brand span { color: var(--orange); }
     .nav-right { display: flex; justify-content: flex-end; }
-    .nav-count {
-      font-size: 0.78rem; color: var(--text-muted);
-      background: var(--navy-light); padding: 3px 10px;
-      border-radius: 20px; font-weight: 600;
-    }
-    .nav-count b { color: var(--orange); }
+    .nav-tag { font-size: .72rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--orange); border: 1px solid rgba(255,84,32,.4); border-radius: 20px; padding: 4px 12px; }
 
     /* HERO */
     .hero {
-      text-align: center; padding: 60px 24px 40px;
-      background: linear-gradient(170deg, var(--navy-mid) 0%, var(--navy-deep) 60%);
+      background: var(--navy); text-align: center; padding: 52px 24px 52px;
       position: relative; overflow: hidden;
     }
-    .hero::before {
-      content: ''; position: absolute; inset: 0;
-      background: radial-gradient(ellipse 70% 50% at 50% 0%, rgba(255,84,32,0.12) 0%, transparent 70%);
-      pointer-events: none;
+    .hero::after {
+      content: ''; position: absolute; bottom: -1px; left: 0; right: 0; height: 44px;
+      background: var(--bg); clip-path: ellipse(55% 100% at 50% 100%);
     }
-    .hero-eyebrow {
-      font-size: 0.78rem; letter-spacing: 0.2em; text-transform: uppercase;
-      color: var(--orange); font-weight: 700; margin-bottom: 12px;
-    }
-    .hero h1 {
-      font-size: clamp(2.2rem, 8vw, 4rem); font-weight: 900;
-      line-height: 1.1; letter-spacing: -0.02em; margin-bottom: 14px;
-    }
+    .hero-eye { font-size: .72rem; letter-spacing: .22em; text-transform: uppercase; color: var(--orange); font-weight: 700; margin-bottom: 10px; }
+    .hero h1 { font-size: clamp(2rem, 7vw, 3.6rem); font-weight: 900; line-height: 1.1; color: #FEFCFF; letter-spacing: -.02em; }
     .hero h1 em { color: var(--orange); font-style: normal; }
-    .hero p {
-      color: var(--text-muted); font-size: 1rem;
-      max-width: 420px; margin: 0 auto 32px; line-height: 1.6;
-    }
+    .hero-sub { color: #9eb5c5; font-size: .95rem; margin-top: 12px; }
 
-    /* UPLOAD */
-    .upload-zone { display: flex; flex-direction: column; align-items: center; gap: 14px; }
-    .upload-btn {
-      position: relative; display: inline-flex; align-items: center; gap: 10px;
-      background: var(--orange); color: #fff;
-      font-size: 1rem; font-weight: 700;
-      padding: 14px 28px; border-radius: 50px;
-      cursor: pointer; border: none;
-      transition: transform 0.15s, box-shadow 0.15s, background 0.15s, opacity 0.15s;
-      box-shadow: 0 6px 24px rgba(255,84,32,0.35);
-      overflow: hidden;
-    }
-    .upload-btn:hover:not(:disabled) { background: var(--orange-glow); transform: translateY(-2px); box-shadow: 0 10px 32px rgba(255,84,32,0.45); }
-    .upload-btn:active:not(:disabled) { transform: scale(0.97); }
-    .upload-btn:disabled { opacity: 0.55; cursor: not-allowed; }
-    .upload-btn input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; font-size: 0; }
-    .upload-hint { font-size: 0.8rem; color: var(--text-muted); }
+    /* COLLAGE WRAPPER */
+    .collage-wrap { padding: 52px 20px 72px; max-width: 1140px; margin: 0 auto; }
+    .collage-header { display: flex; align-items: center; gap: 16px; margin-bottom: 36px; }
+    .collage-title { font-size: 1.25rem; font-weight: 900; }
+    .collage-line { flex: 1; height: 1.5px; background: linear-gradient(90deg, var(--orange), transparent); }
+    .collage-count { font-size: .72rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--orange); border: 1px solid var(--orange); border-radius: 20px; padding: 3px 10px; }
 
-    .progress-wrap {
-      width: 100%; max-width: 300px; height: 5px;
-      background: var(--navy-light); border-radius: 20px; overflow: hidden;
-      display: none;
-    }
-    .progress-wrap.active { display: block; }
-    .progress-bar { height: 100%; background: var(--orange); border-radius: 20px; width: 0%; transition: width 0.2s; }
-
-    /* DROP OVERLAY */
-    .drop-overlay {
-      display: none; position: fixed; inset: 0; z-index: 200;
-      background: rgba(14,45,66,0.88); backdrop-filter: blur(6px);
-      align-items: center; justify-content: center; flex-direction: column; gap: 16px;
-    }
-    .drop-overlay.active { display: flex; }
-    .drop-ring {
-      width: 160px; height: 160px; border-radius: 50%;
-      border: 3px dashed var(--orange);
-      display: flex; align-items: center; justify-content: center;
-      animation: pulse 1s ease infinite alternate;
-    }
-    @keyframes pulse { from { transform: scale(1); } to { transform: scale(1.06); } }
-    .drop-label { font-size: 1.2rem; font-weight: 700; color: var(--orange-glow); }
-
-    /* GALLERY */
-    .section { padding: 40px 20px 60px; max-width: 1200px; margin: 0 auto; }
-    .section-header { display: flex; align-items: center; gap: 14px; margin-bottom: 28px; flex-wrap: wrap; }
-    .section-title { font-size: 1.3rem; font-weight: 800; }
-    .section-line { flex: 1; height: 1px; background: linear-gradient(90deg, var(--orange) 0%, transparent 100%); min-width: 40px; }
-    .section-badge {
-      font-size: 0.75rem; font-weight: 700; letter-spacing: 0.08em;
-      text-transform: uppercase; color: var(--orange);
-      border: 1px solid var(--orange); border-radius: 20px; padding: 3px 10px;
-    }
-
-    .empty-state {
-      text-align: center; padding: 60px 20px;
-      border: 2px dashed var(--navy-light); border-radius: var(--radius);
-      color: var(--text-muted);
-    }
-    .empty-state svg { opacity: 0.3; margin-bottom: 16px; }
-    .empty-state p { font-size: 0.95rem; line-height: 1.6; }
-    .empty-state b { color: var(--orange-glow); }
-
-    .gallery-grid {
+    /* BENTO GRID */
+    .collage {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-      gap: 18px;
+      grid-template-columns: repeat(4, 1fr);
+      grid-auto-rows: 210px;
+      gap: 14px;
     }
 
-    .memory-card {
-      position: relative; border-radius: var(--radius); overflow: hidden;
-      background: var(--navy-mid);
-      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-      cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;
-      aspect-ratio: 4/3;
+    /* CARD BASE */
+    .og-card {
+      position: relative; border-radius: var(--r); overflow: hidden;
+      cursor: pointer; box-shadow: 0 2px 14px rgba(14,45,66,.1);
+      opacity: 0; transform: translateY(30px) scale(.96);
+      animation: fadeUp .6s ease forwards;
+      transition: transform .35s cubic-bezier(.22,1,.36,1), box-shadow .35s;
+      background: #ddeaf0;
     }
-    .memory-card:hover { transform: translateY(-4px) scale(1.01); box-shadow: 0 12px 36px rgba(255,84,32,0.2); }
-    .memory-card img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.4s; }
-    .memory-card:hover img { transform: scale(1.05); }
-    .card-overlay {
+    .og-card:hover {
+      transform: translateY(-5px) scale(1.02) rotate(0deg) !important;
+      box-shadow: 0 18px 44px rgba(255,84,32,.22);
+      z-index: 10;
+    }
+    .og-card img {
+      width: 100%; height: 100%; object-fit: cover; display: block;
+      transition: transform .5s cubic-bezier(.22,1,.36,1), filter .3s;
+      filter: saturate(.92) brightness(.97);
+    }
+    .og-card:hover img { transform: scale(1.08); filter: saturate(1.12) brightness(1.02); }
+
+    /* SIZES */
+    .big   { grid-column: span 2; grid-row: span 2; }
+    .tall  { grid-row: span 2; }
+    .wide  { grid-column: span 2; }
+    .sq    { /* default 1×1 */ }
+
+    /* TILTS */
+    .tl  { animation-name: fadeUpTL; }
+    .tr  { animation-name: fadeUpTR; }
+    .tll { animation-name: fadeUpTLL; }
+    .trr { animation-name: fadeUpTRR; }
+
+    @keyframes fadeUp   { to { opacity:1; transform:translateY(0) scale(1);               } }
+    @keyframes fadeUpTL { to { opacity:1; transform:translateY(0) scale(1) rotate(-1.2deg);} }
+    @keyframes fadeUpTR { to { opacity:1; transform:translateY(0) scale(1) rotate(1.1deg); } }
+    @keyframes fadeUpTLL{ to { opacity:1; transform:translateY(0) scale(1) rotate(-2deg);  } }
+    @keyframes fadeUpTRR{ to { opacity:1; transform:translateY(0) scale(1) rotate(1.8deg); } }
+
+    /* STAGGER */
+    .og-card:nth-child(1)  { animation-delay:.04s }
+    .og-card:nth-child(2)  { animation-delay:.08s }
+    .og-card:nth-child(3)  { animation-delay:.12s }
+    .og-card:nth-child(4)  { animation-delay:.16s }
+    .og-card:nth-child(5)  { animation-delay:.20s }
+    .og-card:nth-child(6)  { animation-delay:.24s }
+    .og-card:nth-child(7)  { animation-delay:.28s }
+    .og-card:nth-child(8)  { animation-delay:.32s }
+    .og-card:nth-child(9)  { animation-delay:.36s }
+    .og-card:nth-child(10) { animation-delay:.40s }
+    .og-card:nth-child(11) { animation-delay:.44s }
+    .og-card:nth-child(12) { animation-delay:.48s }
+    .og-card:nth-child(13) { animation-delay:.52s }
+    .og-card:nth-child(14) { animation-delay:.56s }
+    .og-card:nth-child(15) { animation-delay:.60s }
+
+    /* OVERLAY */
+    .og-overlay {
       position: absolute; inset: 0;
-      background: linear-gradient(to top, rgba(9,30,46,0.85) 0%, transparent 50%);
-      opacity: 0; transition: opacity 0.2s;
-      display: flex; flex-direction: column; justify-content: flex-end; padding: 14px;
+      background: linear-gradient(to top, rgba(14,45,66,.88) 0%, rgba(14,45,66,.15) 55%, transparent 100%);
+      opacity: 0; transition: opacity .3s;
+      display: flex; flex-direction: column; justify-content: flex-end; padding: 16px;
     }
-    .memory-card:hover .card-overlay { opacity: 1; }
-    .card-name { font-size: 0.85rem; font-weight: 700; color: #fff; }
-    .card-time { font-size: 0.72rem; color: var(--text-muted); margin-top: 2px; }
-    .card-delete {
-      position: absolute; top: 10px; right: 10px;
-      width: 30px; height: 30px; border-radius: 50%;
-      background: rgba(255,84,32,0.85); border: none; cursor: pointer;
-      display: flex; align-items: center; justify-content: center;
-      opacity: 0; transition: opacity 0.2s;
-    }
-    .memory-card:hover .card-delete { opacity: 1; }
-    .card-delete:hover { background: var(--orange); }
-    .card-new {
-      position: absolute; top: 10px; left: 10px;
-      font-size: 0.65rem; font-weight: 800; letter-spacing: 0.1em;
-      text-transform: uppercase; color: #fff;
-      background: var(--orange); border-radius: 20px; padding: 3px 9px;
-    }
+    .og-card:hover .og-overlay { opacity: 1; }
+    .og-name    { font-size: .9rem; font-weight: 800; color: #fff; letter-spacing: .02em; }
+    .og-caption { font-size: .74rem; color: rgba(255,255,255,.72); margin-top: 4px; line-height: 1.4; }
 
-    /* skeleton */
-    .skeleton {
-      border-radius: var(--radius); aspect-ratio: 4/3;
-      background: linear-gradient(90deg, var(--navy-mid) 25%, var(--navy-light) 50%, var(--navy-mid) 75%);
-      background-size: 200% 100%;
-      animation: shimmer 1.4s infinite;
+    /* CORNER ACCENT */
+    .og-card::before {
+      content: ''; position: absolute; top: 0; left: 0; z-index: 3;
+      width: 0; height: 0; border-style: solid; border-width: 0;
+      border-color: var(--orange) transparent transparent transparent;
+      transition: border-width .25s;
     }
-    @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+    .og-card:hover::before { border-width: 30px 30px 0 0; }
+
+    /* STICKY NOTE style caption tag */
+    .og-tag {
+      position: absolute; bottom: 10px; left: 10px;
+      background: rgba(255,252,255,.92); color: var(--navy);
+      font-size: .68rem; font-weight: 700; letter-spacing: .04em;
+      padding: 4px 9px; border-radius: 20px;
+      border-left: 3px solid var(--orange);
+      opacity: 0; transform: translateY(6px);
+      transition: opacity .3s, transform .3s;
+      max-width: calc(100% - 20px);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .og-card:hover .og-tag { opacity: 1; transform: translateY(0); }
 
     /* LIGHTBOX */
-    .lightbox {
-      display: none; position: fixed; inset: 0; z-index: 300;
-      background: rgba(9,30,46,0.96);
+    .lb {
+      display: none; position: fixed; inset: 0; z-index: 400;
+      background: rgba(9,20,34,.96); backdrop-filter: blur(12px);
       align-items: center; justify-content: center;
-      padding: 20px; flex-direction: column; gap: 16px;
+      flex-direction: column; gap: 16px; padding: 24px;
     }
-    .lightbox.open { display: flex; }
-    .lightbox img {
-      max-width: 100%; max-height: 80dvh;
-      border-radius: var(--radius); object-fit: contain;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+    .lb.open { display: flex; }
+    .lb-wrap {
+      position: relative; max-width: min(540px, 90vw);
+      animation: lbIn .38s cubic-bezier(.22,1,.36,1);
     }
-    .lightbox-close {
-      position: absolute; top: 16px; right: 20px;
-      background: none; border: none; cursor: pointer;
-      color: var(--text-muted); font-size: 1.8rem; line-height: 1; transition: color 0.15s;
-    }
-    .lightbox-close:hover { color: var(--orange); }
-    .lightbox-caption { font-size: 0.9rem; color: var(--text-muted); text-align: center; }
+    @keyframes lbIn { from { opacity:0; transform:scale(.88) translateY(24px); } to { opacity:1; transform:none; } }
+    .lb-wrap img { width: 100%; max-height: 74dvh; object-fit: contain; border-radius: 18px; box-shadow: 0 32px 80px rgba(0,0,0,.65); display: block; }
+    .lb-info { margin-top: 14px; text-align: center; }
+    .lb-name { font-size: 1.05rem; font-weight: 800; color: #fff; }
+    .lb-cap  { font-size: .82rem; color: rgba(255,255,255,.6); margin-top: 5px; line-height: 1.5; max-width: 400px; margin-left: auto; margin-right: auto; }
+    .lb-close { position: absolute; top: 18px; right: 22px; background: none; border: none; cursor: pointer; color: rgba(255,255,255,.45); font-size: 1.8rem; line-height: 1; transition: color .15s; }
+    .lb-close:hover { color: var(--orange); }
+    .lb-nav { display: flex; gap: 12px; margin-top: 6px; }
+    .lb-btn { background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.18); color: #fff; padding: 9px 22px; border-radius: 50px; font-size: .82rem; font-weight: 700; cursor: pointer; transition: background .15s, border-color .15s; }
+    .lb-btn:hover { background: var(--orange); border-color: var(--orange); }
+    .lb-counter { font-size: .75rem; color: rgba(255,255,255,.4); align-self: center; min-width: 50px; text-align: center; }
 
-    /* TOAST */
-    #toast {
-      position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%) translateY(80px);
-      background: var(--navy-light); color: var(--text-main);
-      padding: 12px 22px; border-radius: 50px; font-size: 0.88rem; font-weight: 600;
-      border-left: 3px solid var(--orange);
-      box-shadow: 0 8px 24px rgba(0,0,0,0.4);
-      transition: transform 0.35s cubic-bezier(.22,1,.36,1), opacity 0.35s;
-      opacity: 0; z-index: 400; white-space: nowrap;
-    }
-    #toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+    /* FOOTER */
+    footer { text-align: center; padding: 28px 20px; font-size: .78rem; color: var(--muted); border-top: 1.5px solid #ddeaf0; }
+    footer b { color: var(--orange); font-weight: 800; }
 
-    footer {
-      text-align: center; padding: 24px 20px;
-      font-size: 0.78rem; color: var(--text-muted);
-      border-top: 1px solid var(--navy-light);
+    /* RESPONSIVE */
+    @media (max-width: 720px) {
+      .collage { grid-template-columns: repeat(2, 1fr); grid-auto-rows: 170px; gap: 10px; }
+      .nav-tag { display: none; }
+      .brand   { font-size: 1.25rem; }
     }
-    footer span { color: var(--orange); }
-
-    @media (max-width: 480px) {
-      .nav-brand { font-size: 1.2rem; }
-      .nav-count { display: none; }
-      .hero { padding: 44px 18px 36px; }
-      .gallery-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; }
-    }
-    @media (min-width: 900px) {
-      .gallery-grid { grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
+    @media (max-width: 420px) {
+      .collage { grid-auto-rows: 140px; gap: 8px; }
     }
     @supports (padding-bottom: env(safe-area-inset-bottom)) {
-      footer { padding-bottom: calc(24px + env(safe-area-inset-bottom)); }
+      footer { padding-bottom: calc(28px + env(safe-area-inset-bottom)); }
     }
   </style>
 </head>
 <body>
 
-<!-- NAV -->
 <nav>
-  <div class="nav-left">
-    <div class="nav-status">
-      <div class="status-dot" id="statusDot"></div>
-      <span class="status-label" id="statusLabel">connecting…</span>
-    </div>
-  </div>
-  <div class="nav-brand">The <span>OGs</span></div>
-  <div class="nav-right">
-    <div class="nav-count" id="navCount"><b>0</b> Memories</div>
-  </div>
+  <div class="nav-dots"><div class="nd"></div><div class="nd"></div><div class="nd"></div></div>
+  <div class="brand">The <span>OGs</span></div>
+  <div class="nav-right"><div class="nav-tag">Est. Always</div></div>
 </nav>
 
-<!-- HERO -->
 <section class="hero">
-  <p class="hero-eyebrow">📸 Shared Gallery</p>
-  <h1>Keep the <em>Memories</em><br>alive, OG.</h1>
-  <p>Upload from any device — it shows up for everyone instantly.</p>
-  <div class="upload-zone">
-    <label class="upload-btn" id="uploadBtn">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-        <polyline points="17 8 12 3 7 8"/>
-        <line x1="12" y1="3" x2="12" y2="15"/>
-      </svg>
-      <span id="uploadBtnText">Add Memories</span>
-      <input type="file" id="fileInput" accept="image/*" multiple />
-    </label>
-    <div class="progress-wrap" id="progressWrap">
-      <div class="progress-bar" id="progressBar"></div>
-    </div>
-    <p class="upload-hint">or drag &amp; drop anywhere · JPG, PNG, GIF, WEBP</p>
-  </div>
+  <p class="hero-eye">📸 The Crew</p>
+  <h1>Forever <em>The OGs</em></h1>
+  <p class="hero-sub">Real ones. Real moments. Always.</p>
 </section>
 
-<!-- GALLERY -->
-<main class="section">
-  <div class="section-header">
-    <h2 class="section-title">Our Memories</h2>
-    <div class="section-line"></div>
-    <div class="section-badge" id="memBadge">0 photos</div>
+<section class="collage-wrap">
+  <div class="collage-header">
+    <h2 class="collage-title">Our Portraits</h2>
+    <div class="collage-line"></div>
+    <div class="collage-count" id="countBadge"></div>
   </div>
-  <div id="emptyState" class="empty-state">
-    <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2">
-      <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/>
-      <polyline points="21 15 16 10 5 21"/>
-    </svg>
-    <p>No memories yet.<br><b>Upload the first photo</b> — it'll appear here on every device.</p>
-  </div>
-  <div class="gallery-grid" id="gallery" style="display:none;"></div>
-</main>
+  <div class="collage" id="collage"></div>
+</section>
 
-<!-- DROP OVERLAY -->
-<div class="drop-overlay" id="dropOverlay">
-  <div class="drop-ring">
-    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#FF5420" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-      <polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>
-      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-    </svg>
+<div class="lb" id="lb" role="dialog" aria-modal="true">
+  <button class="lb-close" id="lbClose" aria-label="Close">✕</button>
+  <div class="lb-wrap">
+    <img id="lbImg" src="" alt="" />
   </div>
-  <p class="drop-label">Drop photos here</p>
+  <div class="lb-info">
+    <div class="lb-name" id="lbName"></div>
+    <div class="lb-cap"  id="lbCap"></div>
+  </div>
+  <div class="lb-nav">
+    <button class="lb-btn" id="lbPrev">← Prev</button>
+    <div class="lb-counter" id="lbCounter"></div>
+    <button class="lb-btn" id="lbNext">Next →</button>
+  </div>
 </div>
 
-<!-- LIGHTBOX -->
-<div class="lightbox" id="lightbox" role="dialog" aria-modal="true">
-  <button class="lightbox-close" id="lbClose" aria-label="Close">✕</button>
-  <img id="lbImg" src="" alt="" />
-  <p class="lightbox-caption" id="lbCaption"></p>
-</div>
-
-<!-- TOAST -->
-<div id="toast" role="status" aria-live="polite"></div>
-
-<footer>Made with ❤️ by <span>The OGs</span> · Synced live across all devices</footer>
+<footer>Made with ❤️ by <b>The OGs</b> · Always and forever</footer>
 
 <script>
-  const $ = id => document.getElementById(id);
-
-  const gallery      = $('gallery');
-  const emptyState   = $('emptyState');
-  const memBadge     = $('memBadge');
-  const navCount     = $('navCount');
-  const fileInput    = $('fileInput');
-  const lightbox     = $('lightbox');
-  const lbImg        = $('lbImg');
-  const lbCaption    = $('lbCaption');
-  const lbClose      = $('lbClose');
-  const dropOverlay  = $('dropOverlay');
-  const statusDot    = $('statusDot');
-  const statusLabel  = $('statusLabel');
-  const uploadBtn    = $('uploadBtn');
-  const uploadBtnText= $('uploadBtnText');
-  const progressWrap = $('progressWrap');
-  const progressBar  = $('progressBar');
-
-  // ── TOAST ──────────────────────────────────────────────
-  let toastTimer;
-  function showToast(msg) {
-    const t = $('toast');
-    t.textContent = msg;
-    t.classList.add('show');
-    clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => t.classList.remove('show'), 3000);
+// ── PHOTOS ─────────────────────────────────────────────────────
+// size: 'big' (2×2) | 'tall' (1×2) | 'wide' (2×1) | 'sq' (1×1)
+// tilt: '' | 'tl' | 'tr' | 'tll' | 'trr'
+const photos = [
+  {
+    id: '1Il272BOQ4yhDdJWmbq7k6uZGUUeudW0s',
+    name: 'The Whole Squad',
+    caption: 'Every legend in one frame. This is us.',
+    size: 'big', tilt: ''
+  },
+  {
+    id: '1mwAoffEuF8P_ETcI4_Gy5pUfA74vbAEZ',
+    name: 'Day Ones',
+    caption: 'Been here since the beginning.',
+    size: 'tall', tilt: 'tr'
+  },
+  {
+    id: '11cXjHsmT99MbijvmKeGi00kcVJQR1qPc',
+    name: 'Golden Hour',
+    caption: 'We stay golden, no matter what.',
+    size: 'sq', tilt: 'tl'
+  },
+  {
+    id: '1nGxhtdFNlRTEbFGpd6_tisjfkDVOgdhm',
+    name: 'Pure Vibes',
+    caption: 'No cap, just good energy.',
+    size: 'sq', tilt: 'trr'
+  },
+  {
+    id: '1yiX3SZVa-0RICwBpxqWD3E76Hxy8aZyY',
+    name: 'The Moment',
+    caption: 'Right place, right people, always.',
+    size: 'wide', tilt: 'tl'
+  },
+  {
+    id: '1tH2uzmYtWScI1f3OEEH-9v9wtIe7ci5F',
+    name: 'Built Different',
+    caption: 'Can\'t find this energy anywhere else.',
+    size: 'sq', tilt: 'tr'
+  },
+  {
+    id: '1u8r0Si7gciGZnOKiIgOFZSsEZsFKva4f',
+    name: 'Legendary',
+    caption: 'History in the making.',
+    size: 'tall', tilt: 'tll'
+  },
+  {
+    id: '1tKrQ6BeGUbs7aoOFX-9QS671Lz3fjgxi',
+    name: 'OG Energy',
+    caption: 'This is what it looks like.',
+    size: 'sq', tilt: 'tl'
+  },
+  {
+    id: '1LL51btAXM--9KLWUtLjYmxXZQFZ2zK7b',
+    name: 'Real Ones',
+    caption: 'Rare breed, rare bond.',
+    size: 'wide', tilt: ''
+  },
+  {
+    id: '1fwzVtsENa0KKhZkpy6JM7G40IXx9Rt7Y',
+    name: 'Always',
+    caption: 'Through everything. Always.',
+    size: 'sq', tilt: 'trr'
+  },
+  {
+    id: '1vADvwLwz5joE5ZR0SogmjVto2AknVHFT',
+    name: 'Timeless',
+    caption: 'Some things never change.',
+    size: 'big', tilt: ''
+  },
+  {
+    id: '18XrKzr7mAPZlK44Znx7Do_1W0u_3aNfR',
+    name: 'The Chapter',
+    caption: 'A page we\'ll read forever.',
+    size: 'tall', tilt: 'tr'
+  },
+  {
+    id: '1ih5XTjdo5Q-glakqwJBQZbgd41KcaUaw',
+    name: 'No Filter',
+    caption: 'Just as we are.',
+    size: 'sq', tilt: 'tll'
+  },
+  {
+    id: '1vjpM9nKPI9CraOSp4103qbcUBr_zomNY',
+    name: 'The Archives',
+    caption: 'Keeping every memory alive.',
+    size: 'wide', tilt: 'tl'
+  },
+  {
+    id: '1z-vXK8Sr3DfvWgSJ50kRtM5BNz_voWA8',
+    name: 'Forever OGs',
+    caption: 'This is the one. This is us.',
+    size: 'sq', tilt: 'tr'
   }
+];
 
-  // ── STATUS ─────────────────────────────────────────────
-  function setStatus(cls, label) {
-    statusDot.className = 'status-dot' + (cls ? ' ' + cls : '');
-    statusLabel.textContent = label;
-  }
+// ── BUILD GRID ─────────────────────────────────────────────────
+const collage  = document.getElementById('collage');
+const countBadge = document.getElementById('countBadge');
+countBadge.textContent = photos.length + ' memories';
 
-  // ── REAL-TIME LISTENER ─────────────────────────────────
-  db.collection(COL)
-    .orderBy('createdAt', 'desc')
-    .onSnapshot(snap => {
-      setStatus('live', 'Live');
-      const docs = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-      render(docs);
-    }, err => {
-      console.error(err);
-      setStatus('error', 'Offline');
-      showToast('⚠️ Firebase error — check console or Firestore rules.');
-    });
+photos.forEach((p, i) => {
+  const url  = `https://lh3.googleusercontent.com/d/${p.id}`;
+  const card = document.createElement('div');
+  card.className = ['og-card', p.size, p.tilt].filter(Boolean).join(' ');
+  card.dataset.index = i;
+  card.innerHTML = `
+    <img src="${url}" alt="${p.name}" loading="lazy" />
+    <div class="og-overlay">
+      <div class="og-name">${p.name}</div>
+      <div class="og-caption">${p.caption}</div>
+    </div>
+    <div class="og-tag">${p.caption}</div>
+  `;
+  card.addEventListener('click', () => openLb(i));
+  collage.appendChild(card);
+});
 
-  // ── RENDER ─────────────────────────────────────────────
-  function render(docs) {
-    const count = docs.length;
-    memBadge.textContent = `${count} photo${count !== 1 ? 's' : ''}`;
-    navCount.innerHTML   = `<b>${count}</b> Memor${count !== 1 ? 'ies' : 'y'}`;
-    emptyState.style.display = count ? 'none' : '';
-    gallery.style.display    = count ? '' : 'none';
+// ── LIGHTBOX ───────────────────────────────────────────────────
+let cur = 0;
+const lb      = document.getElementById('lb');
+const lbImg   = document.getElementById('lbImg');
+const lbName  = document.getElementById('lbName');
+const lbCap   = document.getElementById('lbCap');
+const lbClose = document.getElementById('lbClose');
+const lbPrev  = document.getElementById('lbPrev');
+const lbNext  = document.getElementById('lbNext');
+const lbCounter = document.getElementById('lbCounter');
 
-    gallery.innerHTML = '';
-    docs.forEach((mem, idx) => {
-      const isNew = idx === 0;
-      const timeStr = mem.createdAt
-        ? new Date(mem.createdAt.seconds * 1000).toLocaleString('en-US', {
-            month: 'short', day: 'numeric', year: 'numeric',
-            hour: '2-digit', minute: '2-digit'
-          })
-        : 'Just now';
-
-      const card = document.createElement('div');
-      card.className = 'memory-card';
-      card.innerHTML = `
-        ${isNew ? '<div class="card-new">New</div>' : ''}
-        <img src="${mem.url}" alt="${mem.name}" loading="lazy" />
-        <div class="card-overlay">
-          <div class="card-name">${mem.name}</div>
-          <div class="card-time">${timeStr}</div>
-        </div>
-        <button class="card-delete" title="Remove" aria-label="Remove memory">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round">
-            <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
-          </svg>
-        </button>
-      `;
-      card.querySelector('img').addEventListener('click', () => openLightbox(mem.url, mem.name, timeStr));
-      card.querySelector('.card-overlay').addEventListener('click', () => openLightbox(mem.url, mem.name, timeStr));
-      card.querySelector('.card-delete').addEventListener('click', e => {
-        e.stopPropagation();
-        deleteMemory(mem.id, mem.storagePath);
-      });
-      gallery.appendChild(card);
-    });
-  }
-
-  // ── UPLOAD ─────────────────────────────────────────────
-  async function uploadFiles(files) {
-    const images = [...files].filter(f => f.type.startsWith('image/'));
-    if (!images.length) { showToast('⚠️ Only image files please.'); return; }
-
-    uploadBtn.disabled = true;
-    fileInput.disabled = true;
-    progressWrap.classList.add('active');
-    progressBar.style.width = '0%';
-
-    let done = 0;
-    for (const file of images) {
-      uploadBtnText.textContent = `Uploading ${done + 1}/${images.length}…`;
-      const ref  = storage.ref(`${COL}/${Date.now()}_${file.name}`);
-      const task = ref.put(file);
-
-      await new Promise((resolve, reject) => {
-        task.on('state_changed',
-          snap => {
-            const pct = ((done + snap.bytesTransferred / snap.totalBytes) / images.length) * 100;
-            progressBar.style.width = Math.round(pct) + '%';
-          },
-          reject,
-          async () => {
-            const url = await task.snapshot.ref.getDownloadURL();
-            await db.collection(COL).add({
-              url,
-              name:        file.name.replace(/\.[^.]+$/, ''),
-              storagePath: task.snapshot.ref.fullPath,
-              createdAt:   firebase.firestore.FieldValue.serverTimestamp()
-            });
-            done++;
-            progressBar.style.width = Math.round((done / images.length) * 100) + '%';
-            resolve();
-          }
-        );
-      });
-    }
-
-    showToast(`🎉 Added ${images.length} memor${images.length > 1 ? 'ies' : 'y'}!`);
-    uploadBtn.disabled = false;
-    fileInput.disabled = false;
-    uploadBtnText.textContent = 'Add Memories';
-    progressWrap.classList.remove('active');
-    setTimeout(() => gallery.scrollIntoView({ behavior: 'smooth', block: 'start' }), 400);
-  }
-
-  // ── DELETE ─────────────────────────────────────────────
-  async function deleteMemory(id, storagePath) {
-    try {
-      await db.collection(COL).doc(id).delete();
-      if (storagePath) await storage.ref(storagePath).delete().catch(() => {});
-      showToast('🗑 Memory removed.');
-    } catch (e) {
-      showToast('⚠️ Delete failed — check Firestore rules.');
-    }
-  }
-
-  // ── FILE INPUT ─────────────────────────────────────────
-  fileInput.addEventListener('change', () => { uploadFiles(fileInput.files); fileInput.value = ''; });
-
-  // ── DRAG & DROP ────────────────────────────────────────
-  let dragCounter = 0;
-  document.addEventListener('dragenter',  e => { e.preventDefault(); dragCounter++; dropOverlay.classList.add('active'); });
-  document.addEventListener('dragleave',  ()  => { if (--dragCounter <= 0) { dragCounter = 0; dropOverlay.classList.remove('active'); } });
-  document.addEventListener('dragover',   e => e.preventDefault());
-  document.addEventListener('drop', e => {
-    e.preventDefault(); dragCounter = 0; dropOverlay.classList.remove('active');
-    uploadFiles(e.dataTransfer.files);
+function showPhoto(idx) {
+  cur = (idx + photos.length) % photos.length;
+  const p = photos[cur];
+  lbImg.style.opacity = '0';
+  lbImg.style.transform = 'scale(.96)';
+  lbImg.src = `https://lh3.googleusercontent.com/d/${p.id}`;
+  lbImg.alt = p.name;
+  lbName.textContent = p.name;
+  lbCap.textContent  = p.caption;
+  lbCounter.textContent = `${cur + 1} / ${photos.length}`;
+  requestAnimationFrame(() => {
+    lbImg.style.transition = 'opacity .3s, transform .3s';
+    lbImg.style.opacity = '1';
+    lbImg.style.transform = 'scale(1)';
   });
+}
 
-  // ── LIGHTBOX ───────────────────────────────────────────
-  function openLightbox(url, name, time) {
-    lbImg.src = url; lbImg.alt = name;
-    lbCaption.textContent = `${name} · ${time}`;
-    lightbox.classList.add('open');
-    document.body.style.overflow = 'hidden';
-  }
-  function closeLightbox() {
-    lightbox.classList.remove('open');
-    document.body.style.overflow = '';
-    lbImg.src = '';
-  }
-  lbClose.addEventListener('click', closeLightbox);
-  lightbox.addEventListener('click', e => { if (e.target === lightbox) closeLightbox(); });
-  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
+function openLb(idx) {
+  showPhoto(idx);
+  lb.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeLb() {
+  lb.classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+lbClose.addEventListener('click', closeLb);
+lbPrev.addEventListener('click',  () => showPhoto(cur - 1));
+lbNext.addEventListener('click',  () => showPhoto(cur + 1));
+lb.addEventListener('click', e => { if (e.target === lb) closeLb(); });
+document.addEventListener('keydown', e => {
+  if (!lb.classList.contains('open')) return;
+  if (e.key === 'Escape')     closeLb();
+  if (e.key === 'ArrowLeft')  showPhoto(cur - 1);
+  if (e.key === 'ArrowRight') showPhoto(cur + 1);
+});
+
+// Swipe
+let tx = 0;
+lb.addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, { passive: true });
+lb.addEventListener('touchend',   e => {
+  const dx = e.changedTouches[0].clientX - tx;
+  if (Math.abs(dx) > 50) dx < 0 ? showPhoto(cur + 1) : showPhoto(cur - 1);
+});
 </script>
 </body>
 </html>

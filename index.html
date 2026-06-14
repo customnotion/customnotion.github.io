@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Custom Notion — Social Media, Web & Editing</title>
+  <meta name="description" content="Custom Notion handles your social media presence, builds powerful web apps, and delivers polished edits — so you focus on what you do best." />
+
+  <!-- Free Google Fonts (SIL Open Font License) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,300;0,6..96,400;0,6..96,700;1,6..96,300;1,6..96,400&family=Raleway:wght@300;400;500;600&display=swap" rel="stylesheet" />
+
+  <!-- Tabler Icons (MIT License) -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" />
+
+  <style>
+    /* ─── Reset ─── */
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    /* ─── Base ─── */
+    body {
+      font-family: 'Raleway', sans-serif;
+      background: #FFFFFF;
+      color: #2B2B2B;
+      line-height: 1.6;
+    }
+
+    /* ─── Nav ─── */
+    nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 2.5rem;
+      height: 68px;
+      background: rgba(255, 255, 255, 0.96);
+      border-bottom: 1px solid #D4D4D4;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(8px);
+    }
+    .logo { display: flex; align-items: center; gap: 11px; }
+    .logo-mark {
+      width: 36px; height: 36px;
+      background: #2B2B2B;
+      display: flex; align-items: center; justify-content: center;
+      color: #fff;
+      font-family: 'Bodoni Moda', serif;
+      font-weight: 700; font-size: 15px; letter-spacing: 1px;
+    }
+    .logo-text {
+      font-family: 'Bodoni Moda', serif;
+      font-weight: 400; font-size: 20px;
+      color: #2B2B2B; letter-spacing: 2px;
+      text-decoration: none;
+    }
+    .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+    .nav-links a {
+      text-decoration: none; color: #B3B3B3;
+      font-size: 11px; font-weight: 500;
+      letter-spacing: 2.5px; text-transform: uppercase;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: #2B2B2B; }
+    .nav-toggle { display: none; background: none; border: none; cursor: pointer; }
+    .nav-toggle i { font-size: 22px; color: #2B2B2B; }
+
+    /* ─── Buttons ─── */
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      padding: 10px 22px;
+      font-size: 10px; font-weight: 600;
+      cursor: pointer;
+      transition: all 0.25s;
+      border: none;
+      letter-spacing: 2.5px; text-transform: uppercase;
+      font-family: 'Raleway', sans-serif;
+      text-decoration: none;
+    }
+    .btn-dark { background: #2B2B2B; color: #FFFFFF; }
+    .btn-dark:hover { background: #000; transform: translateY(-1px); }
+    .btn-outline { background: transparent; color: #2B2B2B; border: 1px solid #2B2B2B; }
+    .btn-outline:hover { background: #2B2B2B; color: #fff; }
+    .btn-white { background: #FFFFFF; color: #2B2B2B; border: none; }
+    .btn-white:hover { background: #D4D4D4; }
+    .btn-lg { padding: 13px 34px; font-size: 10px; }
+
+    /* ─── Hero ─── */
+    .hero { padding: 7rem 2.5rem 0; text-align: center; background: #FFFFFF; }
+    .hero-rule { width: 1px; height: 56px; background: #D4D4D4; margin: 0 auto 2rem; }
+    .badge {
+      display: inline-block;
+      background: #F5F5F5; color: #B3B3B3;
+      font-size: 9px; letter-spacing: 2px; text-transform: uppercase;
+      padding: 4px 10px; border: 1px solid #D4D4D4;
+      margin-bottom: 1.75rem;
+      font-family: 'Raleway', sans-serif;
+    }
+    .hero h1 {
+      font-family: 'Bodoni Moda', serif;
+      font-size: clamp(2.8rem, 7vw, 5.8rem);
+      font-weight: 300; line-height: 1.06;
+      max-width: 840px; margin: 0 auto 1.5rem;
+      color: #2B2B2B; letter-spacing: -1px;
+    }
+    .hero h1 em { font-style: italic; color: #B3B3B3; }
+    .hero-sub {
+      font-size: 0.9rem; color: #B3B3B3;
+      max-width: 460px; margin: 0 auto 2.75rem;
+      line-height: 1.9; font-weight: 300; letter-spacing: 0.3px;
+    }
+    .hero-cta { display: flex; align-items: center; justify-content: center; gap: 1rem; flex-wrap: wrap; }
+
+    /* ─── Stats Bar ─── */
+    .stats-bar {
+      display: flex;
+      border-top: 1px solid #D4D4D4;
+      border-bottom: 1px solid #D4D4D4;
+      margin-top: 5rem;
+    }
+    .stat { flex: 1; padding: 1.75rem 1rem; text-align: center; border-right: 1px solid #D4D4D4; }
+    .stat:last-child { border-right: none; }
+    .stat-n {
+      font-family: 'Bodoni Moda', serif;
+      font-size: 3rem; font-weight: 300;
+      color: #2B2B2B; line-height: 1;
+    }
+    .stat-l {
+      font-size: 9px; color: #B3B3B3;
+      margin-top: 0.4rem; letter-spacing: 2.5px; text-transform: uppercase;
+    }
+
+    /* ─── Sections ─── */
+    .section { padding: 6rem 2.5rem; }
+    .section-header { text-align: center; margin-bottom: 4rem; }
+    .section-tag {
+      font-size: 9px; font-weight: 500;
+      letter-spacing: 5px; text-transform: uppercase;
+      color: #B3B3B3; margin-bottom: 1.25rem;
+    }
+    .section-header h2 {
+      font-family: 'Bodoni Moda', serif;
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 300; color: #2B2B2B;
+      margin-bottom: 0.75rem; letter-spacing: -0.3px;
+    }
+    .section-header p {
+      color: #B3B3B3; max-width: 460px;
+      margin: 0 auto; font-size: 0.83rem;
+      line-height: 1.9; font-weight: 300;
+    }
+
+    /* ─── Services Grid ─── */
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      border: 1px solid #D4D4D4;
+      max-width: 1080px; margin: 0 auto;
+    }
+    .card {
+      padding: 2.5rem 2rem;
+      transition: background 0.3s;
+      border-right: 1px solid #D4D4D4;
+    }
+    .services-grid .card:last-child { border-right: none; }
+    .card:hover { background: #2B2B2B; }
+    .card:hover .card-num { color: #B3B3B3; }
+    .card:hover .card-icon i { color: #fff; }
+    .card:hover h3 { color: #fff; }
+    .card:hover .card-body { color: #B3B3B3; }
+    .card:hover ul li { color: #D4D4D4; }
+    .card:hover ul li::before { background: #B3B3B3; }
+    .card-num {
+      font-family: 'Bodoni Moda', serif;
+      font-size: 0.95rem; color: #D4D4D4;
+      margin-bottom: 1.5rem; font-style: italic;
+      transition: color 0.3s;
+    }
+    .card-icon { margin-bottom: 1.25rem; }
+    .card-icon i { font-size: 26px; color: #2B2B2B; transition: color 0.3s; }
+    .card h3 {
+      font-family: 'Bodoni Moda', serif;
+      font-size: 1.35rem; font-weight: 400;
+      color: #2B2B2B; margin-bottom: 0.6rem;
+      transition: color 0.3s;
+    }
+    .card-body { font-size: 0.8rem; color: #B3B3B3; line-height: 1.8; transition: color 0.3s; }
+    .card ul { margin-top: 1.25rem; list-style: none; }
+    .card ul li {
+      font-size: 0.76rem; color: #B3B3B3;
+      padding: 5px 0;
+      display: flex; align-items: center; gap: 8px;
+      letter-spacing: 0.3px;
+      transition: color 0.3s;
+    }
+    .card ul li::before {
+      content: ''; width: 3px; height: 3px;
+      background: #D4D4D4; border-radius: 50%;
+      flex-shrink: 0; transition: background 0.3s;
+    }
+
+    /* ─── YouTube Band ─── */
+    .yt-band {
+      background: #2B2B2B;
+      padding: 4.5rem 2.5rem;
+      text-align: center;
+    }
+    .yt-band h2 {
+      font-family: 'Bodoni Moda', serif;
+      font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+      font-weight: 300; color: #FFFFFF;
+      margin-bottom: 0.75rem; letter-spacing: -0.2px;
+    }
+    .yt-band p {
+      color: #B3B3B3; font-size: 0.83rem;
+      max-width: 420px; margin: 0 auto 2rem;
+      line-height: 1.9; font-weight: 300;
+    }
+
+    /* ─── Testimonials ─── */
+    .tgrid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      border: 1px solid #D4D4D4;
+      max-width: 1080px; margin: 0 auto;
+    }
+    .tcard {
+      padding: 2.25rem 2rem;
+      border-right: 1px solid #D4D4D4;
+      transition: background 0.3s;
+    }
+    .tgrid .tcard:last-child { border-right: none; }
+    .tcard:hover { background: #F9F9F9; }
+    .stars {
+      font-family: 'Bodoni Moda', serif;
+      font-size: 11px; letter-spacing: 4px;
+      color: #2B2B2B; margin-bottom: 1.25rem;
+    }
+    .tcard blockquote {
+      font-family: 'Bodoni Moda', serif;
+      font-size: 1rem; color: #2B2B2B;
+      line-height: 1.75; font-style: italic;
+      margin-bottom: 1.5rem; font-weight: 300;
+    }
+    .tcredit { display: flex; align-items: center; gap: 10px; }
+    .avatar {
+      width: 34px; height: 34px;
+      border-radius: 50%; background: #2B2B2B;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 10px; font-weight: 600; color: #fff;
+      flex-shrink: 0;
+      font-family: 'Raleway', sans-serif; letter-spacing: 1px;
+    }
+    .tcredit strong {
+      font-size: 0.8rem; font-weight: 600;
+      color: #2B2B2B; display: block; letter-spacing: 0.5px;
+    }
+    .tcredit span { font-size: 0.7rem; color: #B3B3B3; letter-spacing: 0.5px; }
+
+    /* ─── CTA / Contact ─── */
+    .cta-section {
+      background: #2B2B2B;
+      padding: 6rem 2.5rem;
+      text-align: center;
+    }
+    .cta-section h2 {
+      font-family: 'Bodoni Moda', serif;
+      font-size: clamp(2rem, 4.5vw, 3.6rem);
+      color: #FFFFFF; font-weight: 300;
+      margin-bottom: 0.85rem; letter-spacing: -0.5px;
+    }
+    .cta-section > p {
+      color: #B3B3B3; font-size: 0.83rem;
+      max-width: 460px; margin: 0 auto 3.5rem;
+      line-height: 1.9; font-weight: 300;
+    }
+    .cta-inner {
+      display: flex; gap: 4rem;
+      align-items: flex-start;
+      justify-content: center;
+      flex-wrap: wrap;
+      max-width: 880px; margin: 0 auto;
+    }
+    .reasons { text-align: left; flex: 1; min-width: 240px; }
+    .reasons li {
+      list-style: none;
+      padding: 10px 0;
+      font-size: 0.8rem; color: #D4D4D4;
+      display: flex; align-items: flex-start; gap: 12px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      letter-spacing: 0.3px;
+    }
+    .reasons li:last-child { border-bottom: none; }
+    .reasons li i { color: #B3B3B3; font-size: 15px; flex-shrink: 0; margin-top: 1px; }
+    .form-wrap { flex: 1; min-width: 280px; max-width: 370px; text-align: left; }
+    .form-wrap input,
+    .form-wrap textarea,
+    .form-wrap select {
+      width: 100%;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      padding: 11px 14px;
+      color: #D4D4D4; font-size: 0.8rem;
+      margin-bottom: 0.9rem;
+      font-family: 'Raleway', sans-serif;
+      transition: border-color 0.2s;
+      appearance: none;
+      border-radius: 0;
+    }
+    .form-wrap input::placeholder,
+    .form-wrap textarea::placeholder { color: rgba(255,255,255,0.2); }
+    .form-wrap input:focus,
+    .form-wrap textarea:focus,
+    .form-wrap select:focus { outline: none; border-color: #B3B3B3; }
+    .form-wrap select option { background: #2B2B2B; color: #D4D4D4; }
+    .form-wrap textarea { resize: vertical; min-height: 80px; }
+    .btn-submit {
+      width: 100%;
+      background: #FFFFFF; color: #2B2B2B;
+      border: none; padding: 13px;
+      font-size: 10px; font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: 'Raleway', sans-serif;
+      letter-spacing: 3px; text-transform: uppercase;
+    }
+    .btn-submit:hover { background: #D4D4D4; }
+
+    /* ─── Footer ─── */
+    footer {
+      background: #1C1C1C;
+      padding: 2.5rem 2.5rem;
+      border-top: 1px solid #2B2B2B;
+    }
+    .footer-inner {
+      display: flex; align-items: center;
+      justify-content: space-between;
+      max-width: 1080px; margin: 0 auto;
+      flex-wrap: wrap; gap: 1.25rem;
+    }
+    .footer-brand { display: flex; align-items: center; gap: 9px; }
+    .footer-mark {
+      width: 26px; height: 26px;
+      background: #fff;
+      display: flex; align-items: center; justify-content: center;
+      color: #2B2B2B;
+      font-family: 'Bodoni Moda', serif;
+      font-weight: 700; font-size: 12px;
+    }
+    .footer-name {
+      font-family: 'Bodoni Moda', serif;
+      font-size: 0.95rem; color: #D4D4D4; letter-spacing: 2px;
+    }
+    .footer-links { display: flex; gap: 1.5rem; }
+    .footer-links a {
+      color: #B3B3B3; text-decoration: none;
+      font-size: 0.7rem; letter-spacing: 2px;
+      text-transform: uppercase; transition: color 0.2s;
+    }
+    .footer-links a:hover { color: #fff; }
+    .social-links { display: flex; gap: 0.6rem; }
+    .social-links a {
+      width: 30px; height: 30px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.1);
+      display: flex; align-items: center; justify-content: center;
+      color: #B3B3B3; text-decoration: none;
+      font-size: 13px; transition: all 0.2s;
+    }
+    .social-links a:hover { background: #fff; color: #2B2B2B; border-color: #fff; }
+    .copy { font-size: 0.68rem; color: #5F5E5A; margin-top: 0.45rem; letter-spacing: 0.5px; }
+    .copy a { color: #5F5E5A; text-decoration: none; }
+    .copy a:hover { color: #B3B3B3; }
+
+    /* ─── Responsive ─── */
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .nav-links.open {
+        display: flex; flex-direction: column;
+        position: absolute; top: 68px; left: 0; right: 0;
+        background: #fff;
+        border-bottom: 1px solid #D4D4D4;
+        padding: 1.5rem 2.5rem;
+        gap: 1.25rem;
+      }
+      .nav-toggle { display: block; }
+      .hero { padding: 4.5rem 1.5rem 0; }
+      .hero h1 { font-size: 2.6rem; }
+      .section { padding: 4rem 1.5rem; }
+      .services-grid, .tgrid {
+        border: none;
+        gap: 1px;
+        background: #D4D4D4;
+      }
+      .card, .tcard { border-right: none; }
+      .cta-section { padding: 4rem 1.5rem; }
+      .stats-bar { flex-wrap: wrap; }
+      .stat { min-width: 50%; border-bottom: 1px solid #D4D4D4; }
+      .footer-inner { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav>
+    <div class="logo">
+      <div class="logo-mark">CN</div>
+      <a href="#" class="logo-text">Custom Notion</a>
+    </div>
+    <ul class="nav-links" id="nav-menu">
+      <li><a href="#services">Services</a></li>
+      <li><a href="#about">About</a></li>
+      <li><a href="#testimonials">Testimonials</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+    <button class="nav-toggle" id="nav-toggle" aria-label="Toggle menu">
+      <i class="ti ti-menu-2"></i>
+    </button>
+    <button class="btn btn-dark" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})">
+      Get Started
+    </button>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-rule"></div>
+    <div class="badge">Social · Web · Editorial</div>
+    <h1>Your Brand Deserves<br>to <em>Stand Out</em> Online</h1>
+    <p class="hero-sub">Custom Notion handles your social media presence, builds powerful web apps, and delivers polished edits — so you focus on what you do best.</p>
+    <div class="hero-cta">
+      <button class="btn btn-dark btn-lg" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})">
+        Start a Project
+      </button>
+      <a href="https://www.youtube.com/@CustomNotion" target="_blank" rel="noopener" class="btn btn-outline btn-lg">
+        <i class="ti ti-brand-youtube" style="font-size:14px;margin-right:7px" aria-hidden="true"></i>
+        Watch on YouTube
+      </a>
+    </div>
+    <div class="stats-bar">
+      <div class="stat"><div class="stat-n">50+</div><div class="stat-l">Projects delivered</div></div>
+      <div class="stat"><div class="stat-n">3</div><div class="stat-l">Core services</div></div>
+      <div class="stat"><div class="stat-n">100%</div><div class="stat-l">Custom work</div></div>
+    </div>
+  </section>
+
+  <!-- Services -->
+  <section class="section" id="services" style="background:#fff">
+    <div class="section-header">
+      <p class="section-tag">What we do</p>
+      <h2>Three Services, One Vision</h2>
+      <p>From your feed to your product to your final cut — a single creative partner for every digital need.</p>
+    </div>
+    <div class="services-grid">
+      <div class="card">
+        <div class="card-num">01 —</div>
+        <div class="card-icon"><i class="ti ti-social" aria-hidden="true"></i></div>
+        <h3>Social Media Handling</h3>
+        <p class="card-body">End-to-end profile management — content calendars, captions, scheduling, and engagement. Your audience grows while you stay focused.</p>
+        <ul>
+          <li>Strategy &amp; content planning</li>
+          <li>Instagram, X, LinkedIn &amp; more</li>
+          <li>Analytics &amp; monthly reports</li>
+          <li>Community engagement</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-num">02 —</div>
+        <div class="card-icon"><i class="ti ti-device-laptop" aria-hidden="true"></i></div>
+        <h3>Web App Development</h3>
+        <p class="card-body">Clean, fast, and fully responsive digital products — from landing pages to full-featured applications that convert visitors into customers.</p>
+        <ul>
+          <li>Responsive design, all devices</li>
+          <li>Modern frameworks &amp; CMS</li>
+          <li>Performance-first builds</li>
+          <li>Ongoing maintenance available</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-num">03 —</div>
+        <div class="card-icon"><i class="ti ti-cut" aria-hidden="true"></i></div>
+        <h3>Video &amp; Content Editing</h3>
+        <p class="card-body">Short-form reels, YouTube long-form, or promotional cuts — raw footage transformed into polished, scroll-stopping content.</p>
+        <ul>
+          <li>YouTube &amp; Reel-ready edits</li>
+          <li>Captions, B-roll &amp; transitions</li>
+          <li>Brand-consistent colour grading</li>
+          <li>48–72 hr turnaround</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- YouTube Band -->
+  <div class="yt-band" id="about">
+    <h2>Watch Us Work</h2>
+    <p>Behind-the-scenes breakdowns, tutorials, and case studies on our YouTube channel. Subscribe to see how we bring ideas to life.</p>
+    <a href="https://www.youtube.com/@CustomNotion" target="_blank" rel="noopener" class="btn btn-white btn-lg">
+      <i class="ti ti-brand-youtube" style="font-size:15px;margin-right:8px" aria-hidden="true"></i>
+      Custom Notion on YouTube
+    </a>
+  </div>
+
+  <!-- Testimonials -->
+  <section class="section" id="testimonials" style="background:#fff">
+    <div class="section-header">
+      <p class="section-tag">Client voices</p>
+      <h2>Trusted by Creators &amp; Brands</h2>
+      <p>Real results from real partnerships — here's what people say about working with Custom Notion.</p>
+    </div>
+    <div class="tgrid">
+      <div class="tcard">
+        <div class="stars">★ ★ ★ ★ ★</div>
+        <blockquote>"Custom Notion completely transformed our Instagram. Within two months our engagement tripled and the content finally matched the quality of our product."</blockquote>
+        <div class="tcredit">
+          <div class="avatar">AR</div>
+          <div>
+            <strong>Ananya R.</strong>
+            <span>Founder, Bloom Skincare</span>
+          </div>
+        </div>
+      </div>
+      <div class="tcard">
+        <div class="stars">★ ★ ★ ★ ★</div>
+        <blockquote>"Our new website launched ahead of schedule. The feedback from customers has been incredible. Clean, fast, professional — Custom Notion just gets it."</blockquote>
+        <div class="tcredit">
+          <div class="avatar">KM</div>
+          <div>
+            <strong>Karan M.</strong>
+            <span>CEO, NextStep Consulting</span>
+          </div>
+        </div>
+      </div>
+      <div class="tcard">
+        <div class="stars">★ ★ ★ ★ ★</div>
+        <blockquote>"The editing quality on my YouTube videos went to a whole new level. Subscribers noticed immediately. Custom Notion is the only editor I'll ever use."</blockquote>
+        <div class="tcredit">
+          <div class="avatar">PS</div>
+          <div>
+            <strong>Priya S.</strong>
+            <span>Content Creator, 85k subscribers</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA / Contact -->
+  <section class="cta-section" id="contact">
+    <h2>Ready to Elevate Your Brand?</h2>
+    <p>Tell us what you're working on and we'll get back to you within 24 hours with a tailored plan.</p>
+    <div class="cta-inner">
+      <ul class="reasons">
+        <li><i class="ti ti-check" aria-hidden="true"></i>Dedicated account manager from day one</li>
+        <li><i class="ti ti-check" aria-hidden="true"></i>100% custom creative — no templates, no shortcuts</li>
+        <li><i class="ti ti-check" aria-hidden="true"></i>Fully responsive, works on web and mobile</li>
+        <li><i class="ti ti-check" aria-hidden="true"></i>Fast turnarounds with transparent timelines</li>
+        <li><i class="ti ti-check" aria-hidden="true"></i>Designed for all ages and all audiences</li>
+        <li><i class="ti ti-check" aria-hidden="true"></i>Flexible packages for any budget</li>
+      </ul>
+      <div class="form-wrap">
+        <input type="text" placeholder="Your name" autocomplete="name" />
+        <input type="email" placeholder="Email address" autocomplete="email" />
+        <select>
+          <option value="" disabled selected>Service you need</option>
+          <option>Social Media Handling</option>
+          <option>Web App Development</option>
+          <option>Video &amp; Content Editing</option>
+          <option>All three!</option>
+        </select>
+        <textarea placeholder="Tell us about your project..."></textarea>
+        <button class="btn-submit">Send Message →</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-inner">
+      <div>
+        <div class="footer-brand">
+          <div class="footer-mark">CN</div>
+          <span class="footer-name">Custom Notion</span>
+        </div>
+        <p class="copy">© 2026 Custom Notion. All rights reserved. · <a href="#">Privacy Policy</a></p>
+      </div>
+      <div class="footer-links">
+        <a href="#services">Services</a>
+        <a href="#testimonials">Testimonials</a>
+        <a href="#contact">Contact</a>
+      </div>
+      <div class="social-links">
+        <a href="https://www.youtube.com/@CustomNotion" target="_blank" rel="noopener" aria-label="YouTube">
+          <i class="ti ti-brand-youtube" aria-hidden="true"></i>
+        </a>
+        <a href="#" aria-label="Instagram"><i class="ti ti-brand-instagram" aria-hidden="true"></i></a>
+        <a href="#" aria-label="X / Twitter"><i class="ti ti-brand-x" aria-hidden="true"></i></a>
+        <a href="#" aria-label="LinkedIn"><i class="ti ti-brand-linkedin" aria-hidden="true"></i></a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const toggle = document.getElementById('nav-toggle');
+    const menu = document.getElementById('nav-menu');
+    toggle.addEventListener('click', () => {
+      menu.classList.toggle('open');
+    });
+    menu.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => menu.classList.remove('open'));
+    });
+  </script>
+
+</body>
+</html>

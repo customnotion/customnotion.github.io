@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="SiteCraft — a self-hosted, offline-first site builder with a home page and local admin dashboard." />
+
+    <!--
+      Content-Security-Policy
+      This app is 100% static and self-contained: no CDN scripts/styles, no
+      third-party fonts, no analytics or telemetry. The policy below only
+      permits resources bundled with the app itself ('self') and blocks
+      everything else, including inline scripts and any outbound requests.
+      'unsafe-inline' is scoped to style-src only, because the Admin Theme
+      Settings feature applies user-chosen colors via inline style attributes
+      (e.g. style={{ background: accentColor }}); no inline <script> or
+      eval-based execution is ever permitted.
+
+      Note: `frame-ancestors` is included for documentation/defense-in-depth
+      but browsers ignore it when a CSP is delivered via <meta> rather than
+      an HTTP response header. If this app is ever served from a host that
+      lets you set custom headers, send this same policy (plus
+      `X-Frame-Options: DENY`) as a real header for full protection against
+      clickjacking; GitHub Pages does not support custom response headers.
+    -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self';" />
+
+    <title>SiteCraft</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>
